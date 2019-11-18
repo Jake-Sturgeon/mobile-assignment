@@ -2,7 +2,7 @@
  * Copyright (c) 2018. This code has been developed by Fabio Ciravegna, The University of Sheffield. All rights reserved. No part of this code can be used without the explicit written permission by the author
  */
 
-package com.team.macbook.mobileassigment;
+package com.team.macbook.com4510;
 
 import android.os.Bundle;
 import android.view.View;
@@ -15,7 +15,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.team.macbook.mobileassigment.database.NumberData;
+import com.team.macbook.com4510.database.NumberData;
 
 
 public class MyView extends AppCompatActivity {

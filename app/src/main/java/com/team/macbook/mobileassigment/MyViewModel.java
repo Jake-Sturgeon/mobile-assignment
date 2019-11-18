@@ -2,7 +2,7 @@
  * Copyright (c) 2018. This code has been developed by Fabio Ciravegna, The University of Sheffield. All rights reserved. No part of this code can be used without the explicit written permission by the author
  */
 
-package com.team.macbook.mobileassigment;
+package com.team.macbook.com4510;
 
 import android.app.Application;
 
@@ -10,7 +10,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.team.macbook.mobileassigment.database.NumberData;
+import com.team.macbook.com4510.database.NumberData;
 
 
 public class MyViewModel extends AndroidViewModel {

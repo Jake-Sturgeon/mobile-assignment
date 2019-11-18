@@ -2,7 +2,7 @@
  * Copyright (c) 2018. This code has been developed by Fabio Ciravegna, The University of Sheffield. All rights reserved. No part of this code can be used without the explicit written permission by the author
  */
 
-package com.team.macbook.mobileassigment;
+package com.team.macbook.com4510;
 
 import android.app.Application;
 import android.os.AsyncTask;
@@ -11,9 +11,9 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.team.macbook.mobileassigment.database.MyDAO;
-import com.team.macbook.mobileassigment.database.MyRoomDatabase;
-import com.team.macbook.mobileassigment.database.NumberData;
+import com.team.macbook.com4510.database.MyDAO;
+import com.team.macbook.com4510.database.MyRoomDatabase;
+import com.team.macbook.com4510.database.NumberData;
 
 import java.util.Random;
 
