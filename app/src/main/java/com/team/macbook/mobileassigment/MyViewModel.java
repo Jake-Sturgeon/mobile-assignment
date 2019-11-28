@@ -10,13 +10,14 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.team.macbook.mobileassigment.database.Node;
 import com.team.macbook.mobileassigment.database.NumberData;
 
 
 public class MyViewModel extends AndroidViewModel {
     private final MyRepository mRepository;
 
-    LiveData<NumberData> numberDataToDisplay;
+    LiveData<Node> nodeDataToDisplay;
     private Barometer barometer;
     private Accelerometer accelerometer;
     private Thermometer thermometer;
@@ -28,7 +29,8 @@ public class MyViewModel extends AndroidViewModel {
         super(application);
         // creation and connection to the Repository
         mRepository = new MyRepository(application);
-        numberDataToDisplay = mRepository.getNumberData();
+        generateNewNode();
+        nodeDataToDisplay = mRepository.getNode();
         barometer= new Barometer(application);
         accelerometer = new Accelerometer(application, barometer);
         thermometer = new Thermometer(application);
@@ -61,11 +63,11 @@ public class MyViewModel extends AndroidViewModel {
      * getter for the live data
      * @return
      */
-    LiveData<NumberData> getNumberDataToDisplay() {
-        if (numberDataToDisplay == null) {
-            numberDataToDisplay = new MutableLiveData<NumberData>();
+    LiveData<Node> getNodeToDisplay() {
+        if (nodeDataToDisplay == null) {
+            nodeDataToDisplay = new MutableLiveData<Node>();
         }
-        return numberDataToDisplay;
+        return nodeDataToDisplay;
     }
 
 
@@ -73,8 +75,8 @@ public class MyViewModel extends AndroidViewModel {
     /**
      * request by the UI to generate a new random number
      */
-    public void generateNewNumber() {
-        mRepository.generateNewNumber();
+    public void generateNewNode() {
+        mRepository.generateNewNode();
     }
 
     public void pauseBarometer(){

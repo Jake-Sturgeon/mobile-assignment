@@ -11,18 +11,19 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.team.macbook.mobileassigment.database.MyDAO;
-import com.team.macbook.mobileassigment.database.MyRoomDatabase;
+import com.team.macbook.mobileassigment.database.Node;
+import com.team.macbook.mobileassigment.database.NodeDAO;
+import com.team.macbook.mobileassigment.database.NodeRoomDatabase;
 import com.team.macbook.mobileassigment.database.NumberData;
 
 import java.util.Random;
 
 
 class MyRepository extends ViewModel {
-    private final MyDAO mDBDao;
+    private final NodeDAO mDBDao;
 
     public MyRepository(Application application) {
-        MyRoomDatabase db = MyRoomDatabase.getDatabase(application);
+        NodeRoomDatabase db = NodeRoomDatabase.getDatabase(application);
         mDBDao = db.myDao();
     }
 
@@ -30,30 +31,31 @@ class MyRepository extends ViewModel {
      * it gets the data when changed in the db and returns it to the ViewModel
      * @return
      */
-    public LiveData<NumberData> getNumberData() {
-        return mDBDao.retrieveOneNumber();
+    public LiveData<Node> getNode() {
+        return mDBDao.retrieveOneNode();
     }
 
     /**
      * called by the UI to request the generation of a new random number
      */
-    public void generateNewNumber() {
+    public void generateNewNode() {
         Random r = new Random();
         int i1 = r.nextInt(10000 - 1) + 1;
-        new insertAsyncTask(mDBDao).execute(new NumberData(i1));
+        int i2 = r.nextInt(10000 - 1) + 1;
+        new insertAsyncTask(mDBDao).execute(new Node(i1, i2, 0.0, 0.0));
     }
 
-    private static class insertAsyncTask extends AsyncTask<NumberData, Void, Void> {
-        private MyDAO mAsyncTaskDao;
+    private static class insertAsyncTask extends AsyncTask<Node, Void, Void> {
+        private NodeDAO mAsyncTaskDao;
         private LiveData<NumberData> numberData;
 
-        insertAsyncTask(MyDAO dao) {
+        insertAsyncTask(NodeDAO dao) {
             mAsyncTaskDao = dao;
         }
         @Override
-        protected Void doInBackground(final NumberData... params) {
+        protected Void doInBackground(final Node... params) {
             mAsyncTaskDao.insert(params[0]);
-            Log.i("MyRepository", "number generated: "+params[0].getNumber()+"");
+            Log.i("MyRepository", "route id generated: "+params[0].getRoute_id()+"");
             // you may want to uncomment this to check if numbers have been inserted
             //            int ix=mAsyncTaskDao.howManyElements();
             //            Log.i("TAG", ix+"");

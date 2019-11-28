@@ -16,6 +16,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.team.macbook.mobileassigment.database.Node;
 import com.team.macbook.mobileassigment.database.NumberData;
 
 
@@ -34,11 +35,11 @@ public class MyView extends AppCompatActivity {
         // when the observed data changes and the activity is
         // in the foreground.
 
-        myViewModel.getStartStop().observe(this, new Observer<String>(){
+        myViewModel.getNodeToDisplay().observe(this, new Observer<Node>(){
             @Override
-            public void onChanged(@Nullable final String newValue) {
+            public void onChanged(@Nullable final Node newValue) {
                 TextView tv= findViewById(R.id.textView);
-                tv.setText(newValue);
+                tv.setText(newValue.getRoute_id()+"");
             }});
 
 
@@ -47,8 +48,9 @@ public class MyView extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                myViewModel.toggle();
-                startActivity(new Intent(MyView.this, MapsActivity.class));
+                myViewModel.generateNewNode();
+//                myViewModel.toggle();
+//                startActivity(new Intent(MyView.this, MapsActivity.class));
             }
         });
 //        myViewModel.startBarometer();
