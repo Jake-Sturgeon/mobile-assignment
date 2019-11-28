@@ -4,6 +4,7 @@
 
 package com.team.macbook.mobileassigment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -47,6 +48,7 @@ public class MyView extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 myViewModel.toggle();
+                startActivity(new Intent(MyView.this, MapsActivity.class));
             }
         });
 //        myViewModel.startBarometer();
