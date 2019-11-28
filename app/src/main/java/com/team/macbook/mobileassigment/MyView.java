@@ -33,15 +33,11 @@ public class MyView extends AppCompatActivity {
         // when the observed data changes and the activity is
         // in the foreground.
 
-        myViewModel.getNumberDataToDisplay().observe(this, new Observer<NumberData>(){
+        myViewModel.getStartStop().observe(this, new Observer<String>(){
             @Override
-            public void onChanged(@Nullable final NumberData newValue) {
+            public void onChanged(@Nullable final String newValue) {
                 TextView tv= findViewById(R.id.textView);
-                // if database is empty
-                if (newValue==null)
-                    tv.setText("click button");
-                else
-                    tv.setText(newValue.getNumber()+"");
+                tv.setText(newValue);
             }});
 
 
@@ -50,9 +46,28 @@ public class MyView extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                myViewModel.generateNewNumber();
+                myViewModel.toggle();
             }
         });
+//        myViewModel.startBarometer();
+//        myViewModel.startAccelerometer();
+//        myViewModel.startThermometer();
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+//        myViewModel.pauseAccelerometer();
+//        myViewModel.pauseBarometer();
+//        myViewModel.pauseThermometer();
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+//        myViewModel.startAccelerometer();
+//        myViewModel.startBarometer();
+//        myViewModel.startThermometer();
 
     }
 }
