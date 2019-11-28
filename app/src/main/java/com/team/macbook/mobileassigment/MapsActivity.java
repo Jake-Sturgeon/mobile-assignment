@@ -1,8 +1,9 @@
-package com.team.macbook.com4510;
+package com.team.macbook.mobileassigment;
 
 import androidx.fragment.app.FragmentActivity;
 
 import android.os.Bundle;
+import android.widget.Toolbar;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;

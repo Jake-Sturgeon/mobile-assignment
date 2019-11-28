@@ -2,8 +2,9 @@
  * Copyright (c) 2018. This code has been developed by Fabio Ciravegna, The University of Sheffield. All rights reserved. No part of this code can be used without the explicit written permission by the author
  */
 
-package com.team.macbook.com4510;
+package com.team.macbook.mobileassigment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -15,7 +16,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.team.macbook.com4510.database.NumberData;
+import com.team.macbook.mobileassigment.database.NumberData;
 
 
 public class MyView extends AppCompatActivity {
@@ -50,7 +51,7 @@ public class MyView extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                myViewModel.generateNewNumber();
+                startActivity(new Intent(MyView.this, MapsActivity.class));
             }
         });
 

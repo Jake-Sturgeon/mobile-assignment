@@ -1,4 +1,4 @@
-package com.team.macbook.com4510;
+package com.team.macbook.mobileassigment;
 
 import org.junit.Test;
 
