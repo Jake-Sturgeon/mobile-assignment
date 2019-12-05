@@ -6,6 +6,7 @@ package com.team.macbook.mobileassigment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -16,11 +17,13 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.team.macbook.mobileassigment.database.NumberData;
+import com.team.macbook.mobileassigment.database.Node;
+import com.team.macbook.mobileassigment.database.RouteWithNodes;
+
+import java.util.List;
 
 
 public class MyView extends AppCompatActivity {
-    LiveData<NumberData> stringToDisplay;
     private MyViewModel myViewModel;
 
     @Override
@@ -34,15 +37,17 @@ public class MyView extends AppCompatActivity {
         // when the observed data changes and the activity is
         // in the foreground.
 
-        myViewModel.getNumberDataToDisplay().observe(this, new Observer<NumberData>(){
+        myViewModel.getNodeToDisplay().observe(this, new Observer<Node>(){
             @Override
-            public void onChanged(@Nullable final NumberData newValue) {
+            public void onChanged(@Nullable final Node newValue) {
                 TextView tv= findViewById(R.id.textView);
-                // if database is empty
-                if (newValue==null)
-                    tv.setText("click button");
-                else
-                    tv.setText(newValue.getNumber()+"");
+                tv.setText(newValue.getRoute_id()+"");
+            }});
+
+        myViewModel.getListRwN().observe(this, new Observer<List<RouteWithNodes>>(){
+            @Override
+            public void onChanged(@Nullable final List<RouteWithNodes> newValue) {
+                Log.d("ROUTES", String.valueOf(newValue.get(0).nodes.size()));
             }});
 
 
@@ -51,9 +56,31 @@ public class MyView extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MyView.this, MapsActivity.class));
+                myViewModel.generateNewNode();
+
+//                myViewModel.toggle();
+//                startActivity(new Intent(MyView.this, MapsActivity.class));
             }
         });
+//        myViewModel.startBarometer();
+//        myViewModel.startAccelerometer();
+//        myViewModel.startThermometer();
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+//        myViewModel.pauseAccelerometer();
+//        myViewModel.pauseBarometer();
+//        myViewModel.pauseThermometer();
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+//        myViewModel.startAccelerometer();
+//        myViewModel.startBarometer();
+//        myViewModel.startThermometer();
 
     }
 }

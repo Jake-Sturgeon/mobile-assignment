@@ -3,10 +3,10 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
         debug {
+            storeFile file('../../maps.jks')
             storePassword 'com4510iscool'
             keyAlias = 'maps'
             keyPassword 'com4510iscool'
-            storeFile file('/Users/Jake/Documents/University/ComputerScience/YearFour/mobile/maps.jks')
         }
     }
     compileSdkVersion 29

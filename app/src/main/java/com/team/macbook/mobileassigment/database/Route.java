@@ -5,33 +5,33 @@
 package com.team.macbook.mobileassigment.database;
 
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+
 @Entity()
-public class NumberData {
+public class Route {
     @PrimaryKey(autoGenerate = true)
     @androidx.annotation.NonNull
-    private int id=0;
-    private int number;
+    private int routeId = 0;
 
-    public NumberData(int number) {
-        this.number= number;
+    public Route() {
     }
 
     @androidx.annotation.NonNull
-    public int getId() {
-        return id;
+    public int getRouteId() {
+        return routeId;
     }
-    public void setId(@androidx.annotation.NonNull int id) {
-        this.id = id;
-    }
-
-    public int getNumber() {
-        return number;
+    public void setRouteId(@androidx.annotation.NonNull int id) {
+        this.routeId = id;
     }
 
-    public void setNumber(int number) {
-        this.number = number;
-    }
+
 }

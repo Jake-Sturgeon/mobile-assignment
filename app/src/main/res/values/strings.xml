@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">MobileAssigment</string>
     <string name="action_settings">Settings</string>
+    <string name="started">Started</string>
+    <string name="stopped">Stopped</string>
     <string name="title_activity_maps">Map</string>
     <string name="button">Button</string>
 
