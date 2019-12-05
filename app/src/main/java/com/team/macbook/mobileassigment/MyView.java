@@ -38,10 +38,11 @@ public class MyView extends AppCompatActivity {
         // in the foreground.
 
         myViewModel.getNodeToDisplay().observe(this, new Observer<Node>(){
-            @Override
             public void onChanged(@Nullable final Node newValue) {
-                TextView tv= findViewById(R.id.textView);
-                tv.setText(newValue.getRoute_id()+"");
+                if (newValue != null) {
+                    TextView tv = findViewById(R.id.textView);
+                    tv.setText(newValue.getRoute_id() + "");
+                }
             }});
 
         myViewModel.getListRwN().observe(this, new Observer<List<RouteWithNodes>>(){
@@ -62,9 +63,7 @@ public class MyView extends AppCompatActivity {
 //                startActivity(new Intent(MyView.this, MapsActivity.class));
             }
         });
-//        myViewModel.startBarometer();
-//        myViewModel.startAccelerometer();
-//        myViewModel.startThermometer();
+
     }
 
     @Override
