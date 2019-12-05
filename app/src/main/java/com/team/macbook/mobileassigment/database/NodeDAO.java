@@ -9,6 +9,9 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Transaction;
+
+import java.util.List;
 
 @Dao
 public interface NodeDAO {
@@ -30,4 +33,32 @@ public interface NodeDAO {
 
     @Query("SELECT COUNT(*) FROM node")
     int howManyElements();
+
+    @Insert
+    void insertAllRoutes(Route... route);
+
+    @Insert
+    void insertRoute(Route route);
+
+    @Delete
+    void deleteRoute(Route route);
+
+    // it selects a random element
+    @Query("SELECT * FROM route ORDER BY RANDOM() LIMIT 1")
+    Route retrieveOneRoute();
+
+    @Delete
+    void deleteAllRoutes(Route... route);
+
+    @Query("SELECT COUNT(*) FROM route")
+    int howManyRouteElements();
+
+    @Transaction
+    @Query("SELECT * FROM route")
+    LiveData<List<RouteWithNodes>> getRoutesWithNodes();
+
+    @Transaction
+    @Query("SELECT * FROM route")
+    List<RouteWithEdges> getRoutesWithEdges();
+
 }

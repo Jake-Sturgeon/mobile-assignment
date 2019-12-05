@@ -14,8 +14,10 @@ import androidx.lifecycle.ViewModel;
 import com.team.macbook.mobileassigment.database.Node;
 import com.team.macbook.mobileassigment.database.NodeDAO;
 import com.team.macbook.mobileassigment.database.NodeRoomDatabase;
-import com.team.macbook.mobileassigment.database.NumberData;
+import com.team.macbook.mobileassigment.database.Route;
+import com.team.macbook.mobileassigment.database.RouteWithNodes;
 
+import java.util.List;
 import java.util.Random;
 
 
@@ -42,20 +44,45 @@ class MyRepository extends ViewModel {
         Random r = new Random();
         int i1 = r.nextInt(10000 - 1) + 1;
         int i2 = r.nextInt(10000 - 1) + 1;
-        new insertAsyncTask(mDBDao).execute(new Node(i1, i2, 0.0, 0.0));
+        new insertAsyncTask(mDBDao).execute(new Node(1, i2, 0.0, 0.0));
     }
+
+    public void generateNewRoute() {
+        new insertAsyncTaskRoute(mDBDao).execute(new Route());
+    }
+
+    public LiveData<List<RouteWithNodes>> getRoutesWithNodes(){ return mDBDao.getRoutesWithNodes();}
+
 
     private static class insertAsyncTask extends AsyncTask<Node, Void, Void> {
         private NodeDAO mAsyncTaskDao;
-        private LiveData<NumberData> numberData;
 
         insertAsyncTask(NodeDAO dao) {
             mAsyncTaskDao = dao;
         }
         @Override
         protected Void doInBackground(final Node... params) {
+            int id = mAsyncTaskDao.retrieveOneRoute().getRouteId();
+            params[0].setRoute_id(id);
             mAsyncTaskDao.insert(params[0]);
             Log.i("MyRepository", "route id generated: "+params[0].getRoute_id()+"");
+            // you may want to uncomment this to check if numbers have been inserted
+            //            int ix=mAsyncTaskDao.howManyElements();
+            //            Log.i("TAG", ix+"");
+            return null;
+        }
+    }
+
+    private static class insertAsyncTaskRoute extends AsyncTask<Route, Void, Void> {
+        private NodeDAO mAsyncTaskDao;
+
+        insertAsyncTaskRoute(NodeDAO dao) {
+            mAsyncTaskDao = dao;
+        }
+        @Override
+        protected Void doInBackground(final Route... params) {
+            mAsyncTaskDao.insertRoute(params[0]);
+            Log.i("MyRepository", "route id generated: "+params[0].getRouteId()+"");
             // you may want to uncomment this to check if numbers have been inserted
             //            int ix=mAsyncTaskDao.howManyElements();
             //            Log.i("TAG", ix+"");

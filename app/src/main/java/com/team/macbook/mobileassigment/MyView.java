@@ -6,6 +6,7 @@ package com.team.macbook.mobileassigment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -17,11 +18,12 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.team.macbook.mobileassigment.database.Node;
-import com.team.macbook.mobileassigment.database.NumberData;
+import com.team.macbook.mobileassigment.database.RouteWithNodes;
+
+import java.util.List;
 
 
 public class MyView extends AppCompatActivity {
-    LiveData<NumberData> stringToDisplay;
     private MyViewModel myViewModel;
 
     @Override
@@ -42,6 +44,12 @@ public class MyView extends AppCompatActivity {
                 tv.setText(newValue.getRoute_id()+"");
             }});
 
+        myViewModel.getListRwN().observe(this, new Observer<List<RouteWithNodes>>(){
+            @Override
+            public void onChanged(@Nullable final List<RouteWithNodes> newValue) {
+                Log.d("ROUTES", String.valueOf(newValue.get(0).nodes.size()));
+            }});
+
 
         // it generates a request to generate a new random number
         Button button = findViewById(R.id.button);
@@ -49,6 +57,7 @@ public class MyView extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 myViewModel.generateNewNode();
+
 //                myViewModel.toggle();
 //                startActivity(new Intent(MyView.this, MapsActivity.class));
             }

@@ -11,13 +11,16 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.team.macbook.mobileassigment.database.Node;
-import com.team.macbook.mobileassigment.database.NumberData;
+import com.team.macbook.mobileassigment.database.RouteWithNodes;
+
+import java.util.List;
 
 
 public class MyViewModel extends AndroidViewModel {
     private final MyRepository mRepository;
 
     LiveData<Node> nodeDataToDisplay;
+    LiveData<List<RouteWithNodes>> rwN_list;
     private Barometer barometer;
     private Accelerometer accelerometer;
     private Thermometer thermometer;
@@ -29,8 +32,10 @@ public class MyViewModel extends AndroidViewModel {
         super(application);
         // creation and connection to the Repository
         mRepository = new MyRepository(application);
-        generateNewNode();
+        generateNewRoute();
+
         nodeDataToDisplay = mRepository.getNode();
+        rwN_list = mRepository.getRoutesWithNodes();
         barometer= new Barometer(application);
         accelerometer = new Accelerometer(application, barometer);
         thermometer = new Thermometer(application);
@@ -70,11 +75,17 @@ public class MyViewModel extends AndroidViewModel {
         return nodeDataToDisplay;
     }
 
+    LiveData<List<RouteWithNodes>> getListRwN(){
+        if (rwN_list == null) {
+            rwN_list = new MutableLiveData<List<RouteWithNodes>>();
+        }
+        return rwN_list;
+    }
 
+    public void generateNewRoute() {
+        mRepository.generateNewRoute();
+    }
 
-    /**
-     * request by the UI to generate a new random number
-     */
     public void generateNewNode() {
         mRepository.generateNewNode();
     }
