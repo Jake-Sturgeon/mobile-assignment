@@ -61,4 +61,8 @@ public interface NodeDAO {
     @Query("SELECT * FROM route")
     List<RouteWithEdges> getRoutesWithEdges();
 
+    @Transaction
+    @Query("SELECT * FROM route WHERE routeId == :id")
+    LiveData<RouteWithNodes> getRouteNodesFromId(String id);
+
 }
