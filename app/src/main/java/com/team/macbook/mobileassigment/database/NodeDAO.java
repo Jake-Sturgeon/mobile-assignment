@@ -38,7 +38,7 @@ public interface NodeDAO {
     void insertAllRoutes(Route... route);
 
     @Insert
-    void insertRoute(Route route);
+    long insertRoute(Route route);
 
     @Delete
     void deleteRoute(Route route);
@@ -64,5 +64,8 @@ public interface NodeDAO {
     @Transaction
     @Query("SELECT * FROM route WHERE routeId == :id")
     LiveData<RouteWithNodes> getRouteNodesFromId(String id);
+
+    @Query("SELECT * FROM route WHERE routeId == :id")
+    LiveData<Route> getRouteFromId(String id);
 
 }

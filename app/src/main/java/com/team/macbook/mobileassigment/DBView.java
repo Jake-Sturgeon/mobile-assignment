@@ -4,16 +4,16 @@
 
 package com.team.macbook.mobileassigment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LiveData;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -24,13 +24,14 @@ import com.team.macbook.mobileassigment.database.RouteWithNodes;
 import java.util.List;
 
 
-public class MyView extends AppCompatActivity {
+public class DBView extends AppCompatActivity {
     private MyViewModel myViewModel;
+    private String id = "1";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_db);
 
         // Get a new or existing ViewModel from the ViewModelProvider.
         myViewModel = ViewModelProviders.of(this).get(MyViewModel.class);
@@ -38,39 +39,48 @@ public class MyView extends AppCompatActivity {
         // when the observed data changes and the activity is
         // in the foreground.
 
-        myViewModel.getNodeToDisplay().observe(this, new Observer<Node>(){
+        final LifecycleOwner tracker = this;
+        myViewModel.getCurrentRoute().observe(this, new Observer<MyViewModel.CurrentRoute>(){
             @Override
-            public void onChanged(@Nullable final Node newValue) {
-                if (newValue != null){
-                    TextView tv= findViewById(R.id.textView);
-                    tv.setText(newValue.getRoute_id()+"");
-                }
-
-            }});
-
-        myViewModel.getListRwN().observe(this, new Observer<List<RouteWithNodes>>(){
-            @Override
-            public void onChanged(@Nullable final List<RouteWithNodes> newValue) {
+            public void onChanged(@Nullable final MyViewModel.CurrentRoute newValue) {
+                Log.d("Changed", "changed");
                 if (newValue != null) {
-                    Log.d("ROUTES", String.valueOf(newValue.get(0).nodes.size()));
+                    newValue.getRoute().observe(tracker, new Observer<Route>(){
+                        @Override
+                        public void onChanged(@Nullable final Route newValue) {
+                            if (newValue != null) {
+                                Log.d("Current route title", String.valueOf(newValue.getTitle()));
+                                TextView title = findViewById(R.id.routeTitle);
+                                title.setText(newValue.getTitle());
+                            }
+                        }});
                 }
             }});
 
-        myViewModel.getRouteFromId().observe(this, new Observer<Route>(){
-            @Override
-            public void onChanged(@Nullable final Route newValue) {
-                if (newValue != null) {
-                    Log.d("Current route", String.valueOf(newValue.getRouteId()));
-                }
-            }});
+
+
 
 
         // it generates a request to generate a new random number
-        Button button = findViewById(R.id.button);
+        Button button = findViewById(R.id.getButton);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                myViewModel.generateNewNode();
+                EditText num = findViewById(R.id.routeNumber);
+                myViewModel.setCurrentRoute(num.getText().toString());
+                Log.d("Setting route", num.getText().toString());
+
+//                myViewModel.toggle();
+//                startActivity(new Intent(MyView.this, MapsActivity.class));
+            }
+        });
+        Button new_button = findViewById(R.id.newButton);
+        new_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText title = findViewById(R.id.inputTitle);
+                myViewModel.generateNewRoute(title.getText().toString());
+                Log.d("Creating route", title.getText().toString());
 
 //                myViewModel.toggle();
 //                startActivity(new Intent(MyView.this, MapsActivity.class));

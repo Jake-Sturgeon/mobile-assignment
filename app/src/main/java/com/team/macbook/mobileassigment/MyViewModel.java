@@ -5,15 +5,18 @@
 package com.team.macbook.mobileassigment;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.team.macbook.mobileassigment.database.Node;
+import com.team.macbook.mobileassigment.database.Route;
 import com.team.macbook.mobileassigment.database.RouteWithNodes;
 
 import java.util.List;
+import java.util.Observable;
 
 
 public class MyViewModel extends AndroidViewModel {
@@ -21,24 +24,38 @@ public class MyViewModel extends AndroidViewModel {
 
     LiveData<Node> nodeDataToDisplay;
     LiveData<List<RouteWithNodes>> rwN_list;
+    LiveData<Route> route;
     private Barometer barometer;
     private Accelerometer accelerometer;
     private Thermometer thermometer;
     private boolean started = false;
     private MutableLiveData<String> text;
-
+    private MutableLiveData<CurrentRoute> currentRoute;
 
     public MyViewModel (Application application) {
         super(application);
         // creation and connection to the Repository
         mRepository = new MyRepository(application);
-        generateNewRoute();
+        generateNewRoute("Initial");
 
         nodeDataToDisplay = mRepository.getNode();
+        route = mRepository.getRouteFromId("1");
+        currentRoute = new MutableLiveData<CurrentRoute>(new CurrentRoute("1"));
         rwN_list = mRepository.getRoutesWithNodes();
         barometer= new Barometer(application);
         accelerometer = new Accelerometer(application, barometer);
         thermometer = new Thermometer(application);
+    }
+
+    public void setCurrentRoute(String id) {
+        currentRoute.postValue(new CurrentRoute(id));
+    }
+
+    public MutableLiveData<CurrentRoute> getCurrentRoute() {
+        if (currentRoute == null) {
+            currentRoute = new MutableLiveData<CurrentRoute>();
+        }
+        return currentRoute;
     }
 
     public LiveData<String> getStartStop() {
@@ -82,8 +99,16 @@ public class MyViewModel extends AndroidViewModel {
         return rwN_list;
     }
 
-    public void generateNewRoute() {
-        mRepository.generateNewRoute();
+    LiveData<Route> getRouteFromId(){
+        if (route == null) {
+            route = new MutableLiveData<Route>();
+        }
+        Log.d("werwerwerw", route.toString());
+        return route;
+    }
+
+    public void generateNewRoute(String title) {
+        mRepository.generateNewRoute(title);
     }
 
     public void generateNewNode() {
@@ -112,5 +137,24 @@ public class MyViewModel extends AndroidViewModel {
 
     public void startAccelerometer(){
         accelerometer.startAccelerometerRecording();
+    }
+
+
+    public class CurrentRoute extends Observable {
+        private LiveData<Route> route;
+        private String id;
+
+        public CurrentRoute(String id){
+            this.id = id;
+            this.route = mRepository.getRouteFromId(id);
+        }
+
+        public LiveData<Route> getRoute(){ return route; }
+        public String getId(){ return id; }
+        public void setId(String id){
+            this.id = id;
+            this.route = mRepository.getRouteFromId(id);
+        }
+
     }
 }
