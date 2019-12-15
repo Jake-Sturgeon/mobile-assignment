@@ -38,31 +38,7 @@ public class MyView extends AppCompatActivity {
         // when the observed data changes and the activity is
         // in the foreground.
 
-        myViewModel.getNodeToDisplay().observe(this, new Observer<Node>(){
-            @Override
-            public void onChanged(@Nullable final Node newValue) {
-                if (newValue != null){
-                    TextView tv= findViewById(R.id.textView);
-                    tv.setText(newValue.getRoute_id()+"");
-                }
 
-            }});
-
-        myViewModel.getListRwN().observe(this, new Observer<List<RouteWithNodes>>(){
-            @Override
-            public void onChanged(@Nullable final List<RouteWithNodes> newValue) {
-                if (newValue != null) {
-                    Log.d("ROUTES", String.valueOf(newValue.get(0).nodes.size()));
-                }
-            }});
-
-        myViewModel.getRouteFromId().observe(this, new Observer<Route>(){
-            @Override
-            public void onChanged(@Nullable final Route newValue) {
-                if (newValue != null) {
-                    Log.d("Current route", String.valueOf(newValue.getRouteId()));
-                }
-            }});
 
 
         // it generates a request to generate a new random number

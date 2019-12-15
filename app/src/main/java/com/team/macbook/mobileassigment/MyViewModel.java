@@ -7,10 +7,14 @@ package com.team.macbook.mobileassigment;
 import android.app.Application;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 
+import com.team.macbook.mobileassigment.database.CompleteRoute;
 import com.team.macbook.mobileassigment.database.Node;
 import com.team.macbook.mobileassigment.database.Route;
 import com.team.macbook.mobileassigment.database.RouteWithNodes;
@@ -30,7 +34,7 @@ public class MyViewModel extends AndroidViewModel {
     private Thermometer thermometer;
     private boolean started = false;
     private MutableLiveData<String> text;
-    private MutableLiveData<CurrentRoute> currentRoute;
+    private MutableLiveData<CompleteRoute> cr = new MutableLiveData<>();
 
     public MyViewModel (Application application) {
         super(application);
@@ -40,23 +44,14 @@ public class MyViewModel extends AndroidViewModel {
 
         nodeDataToDisplay = mRepository.getNode();
         route = mRepository.getRouteFromId("1");
-        currentRoute = new MutableLiveData<CurrentRoute>(new CurrentRoute("1"));
         rwN_list = mRepository.getRoutesWithNodes();
         barometer= new Barometer(application);
         accelerometer = new Accelerometer(application, barometer);
         thermometer = new Thermometer(application);
+
+        generateNewNode();
     }
 
-    public void setCurrentRoute(String id) {
-        currentRoute.postValue(new CurrentRoute(id));
-    }
-
-    public MutableLiveData<CurrentRoute> getCurrentRoute() {
-        if (currentRoute == null) {
-            currentRoute = new MutableLiveData<CurrentRoute>();
-        }
-        return currentRoute;
-    }
 
     public LiveData<String> getStartStop() {
         if (text == null) {
@@ -85,34 +80,14 @@ public class MyViewModel extends AndroidViewModel {
      * getter for the live data
      * @return
      */
-    LiveData<Node> getNodeToDisplay() {
-        if (nodeDataToDisplay == null) {
-            nodeDataToDisplay = new MutableLiveData<Node>();
-        }
-        return nodeDataToDisplay;
-    }
 
-    LiveData<List<RouteWithNodes>> getListRwN(){
-        if (rwN_list == null) {
-            rwN_list = new MutableLiveData<List<RouteWithNodes>>();
-        }
-        return rwN_list;
-    }
-
-    LiveData<Route> getRouteFromId(){
-        if (route == null) {
-            route = new MutableLiveData<Route>();
-        }
-        Log.d("werwerwerw", route.toString());
-        return route;
-    }
 
     public void generateNewRoute(String title) {
         mRepository.generateNewRoute(title);
     }
 
     public void generateNewNode() {
-        mRepository.generateNewNode();
+        mRepository.generateNewNode(1, 1, 1);
     }
 
     public void pauseBarometer(){
@@ -140,21 +115,23 @@ public class MyViewModel extends AndroidViewModel {
     }
 
 
-    public class CurrentRoute extends Observable {
-        private LiveData<Route> route;
-        private String id;
 
-        public CurrentRoute(String id){
-            this.id = id;
-            this.route = mRepository.getRouteFromId(id);
-        }
-
-        public LiveData<Route> getRoute(){ return route; }
-        public String getId(){ return id; }
-        public void setId(String id){
-            this.id = id;
-            this.route = mRepository.getRouteFromId(id);
-        }
+    public void setCR(String id, LifecycleOwner thread) {
+        LiveData<CompleteRoute> temp = mRepository.getCompleteRouteFromId(id);
+        temp.observe(thread, new Observer<CompleteRoute>() {
+            @Override
+            public void onChanged(@Nullable final CompleteRoute newValue) {
+                cr.postValue(newValue);
+            }
+        });
 
     }
+
+    public MutableLiveData<CompleteRoute> getCR() {
+        if (cr == null) {
+            cr = new MutableLiveData<CompleteRoute>();
+        }
+        return cr;
+    }
+
 }

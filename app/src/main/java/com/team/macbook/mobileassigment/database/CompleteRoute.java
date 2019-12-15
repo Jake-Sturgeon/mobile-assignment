@@ -5,17 +5,14 @@
 package com.team.macbook.mobileassigment.database;
 
 
-import androidx.annotation.NonNull;
 import androidx.room.Embedded;
 import androidx.room.Entity;
-import androidx.room.PrimaryKey;
 import androidx.room.Relation;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity()
-public class RouteWithNodes {
+public class CompleteRoute {
     @Embedded
     public Route route;
     @Relation(
@@ -23,5 +20,11 @@ public class RouteWithNodes {
             entityColumn = "route_id"
     )
     public List<Node> nodes;
+
+    @Relation(
+            parentColumn = "routeId",
+            entityColumn = "route_id"
+    )
+    public List<Edge> edges;
 
 }

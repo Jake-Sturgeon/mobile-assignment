@@ -11,6 +11,7 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.team.macbook.mobileassigment.database.CompleteRoute;
 import com.team.macbook.mobileassigment.database.Node;
 import com.team.macbook.mobileassigment.database.NodeDAO;
 import com.team.macbook.mobileassigment.database.NodeRoomDatabase;
@@ -45,11 +46,8 @@ class MyRepository extends ViewModel {
     /**
      * called by the UI to request the generation of a new random number
      */
-    public void generateNewNode() {
-        Random r = new Random();
-        int i1 = r.nextInt(10000 - 1) + 1;
-        int i2 = r.nextInt(10000 - 1) + 1;
-        new insertNode(mDBDao).execute(new Node(1, i2, 0.0, 0.0));
+    public void generateNewNode(int id, double lat, double longi) {
+        new insertNode(mDBDao).execute(new Node(id, 0, lat, longi));
     }
 
     public void generateNewRoute(String title) {
@@ -58,19 +56,28 @@ class MyRepository extends ViewModel {
 
     public LiveData<List<RouteWithNodes>> getRoutesWithNodes(){ return mDBDao.getRoutesWithNodes();}
 
+    public LiveData<RouteWithNodes> getRouteWithNodesFromId(String id){
+        return mDBDao.getRouteNodesFromId(id);
+    }
 
-    private static class insertNode extends AsyncTask<Node, Void, Void> {
+    public LiveData<CompleteRoute> getCompleteRouteFromId(String id){ return mDBDao.getCompleteRouteFromId(id); }
+
+
+    private static class insertNode extends AsyncTask<Node, Void, Long> {
         private NodeDAO mAsyncTaskDao;
         insertNode(NodeDAO dao) {
             mAsyncTaskDao = dao;
         }
         @Override
-        protected Void doInBackground(final Node... params) {
-            int id = mAsyncTaskDao.retrieveOneRoute().getRouteId();
-            params[0].setRoute_id(id);
-            mAsyncTaskDao.insert(params[0]);
-            Log.i("MyRepository", "route id generated: "+params[0].getRoute_id()+"");
-            return null;
+        protected Long doInBackground(final Node... params) {
+
+
+            return mAsyncTaskDao.insert(params[0]);
+        }
+
+        @Override
+        protected void onPostExecute(Long id){
+            Log.i("MyRepository", "Node id generated: "+id+"");
         }
     }
 

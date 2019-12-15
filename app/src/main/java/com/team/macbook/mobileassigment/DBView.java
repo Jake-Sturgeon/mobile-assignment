@@ -17,6 +17,7 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.team.macbook.mobileassigment.database.CompleteRoute;
 import com.team.macbook.mobileassigment.database.Node;
 import com.team.macbook.mobileassigment.database.Route;
 import com.team.macbook.mobileassigment.database.RouteWithNodes;
@@ -40,25 +41,20 @@ public class DBView extends AppCompatActivity {
         // in the foreground.
 
         final LifecycleOwner tracker = this;
-        myViewModel.getCurrentRoute().observe(this, new Observer<MyViewModel.CurrentRoute>(){
+
+        myViewModel.getCR().observe(this, new Observer<CompleteRoute>(){
             @Override
-            public void onChanged(@Nullable final MyViewModel.CurrentRoute newValue) {
-                Log.d("Changed", "changed");
+            public void onChanged(@Nullable final CompleteRoute newValue) {
                 if (newValue != null) {
-                    newValue.getRoute().observe(tracker, new Observer<Route>(){
-                        @Override
-                        public void onChanged(@Nullable final Route newValue) {
-                            if (newValue != null) {
-                                Log.d("Current route title", String.valueOf(newValue.getTitle()));
-                                TextView title = findViewById(R.id.routeTitle);
-                                title.setText(newValue.getTitle());
-                            }
-                        }});
+                    Log.d("Current route title", String.valueOf(newValue.route.getTitle()));
+                    TextView title = findViewById(R.id.routeTitle);
+                    title.setText(newValue.route.getTitle());
+                    TextView node_number = findViewById(R.id.node_number);
+                    node_number.setText(String.valueOf(newValue.nodes.size()));
+                    TextView edge_number = findViewById(R.id.edge_number);
+                    edge_number.setText(String.valueOf(newValue.edges.size()));
                 }
             }});
-
-
-
 
 
         // it generates a request to generate a new random number
@@ -67,7 +63,7 @@ public class DBView extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 EditText num = findViewById(R.id.routeNumber);
-                myViewModel.setCurrentRoute(num.getText().toString());
+                myViewModel.setCR(num.getText().toString() ,tracker);
                 Log.d("Setting route", num.getText().toString());
 
 //                myViewModel.toggle();
