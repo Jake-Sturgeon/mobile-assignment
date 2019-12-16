@@ -18,6 +18,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.team.macbook.mobileassigment.database.Node;
+import com.team.macbook.mobileassigment.database.Route;
 import com.team.macbook.mobileassigment.database.RouteWithNodes;
 
 import java.util.List;
@@ -37,19 +38,16 @@ public class MyView extends AppCompatActivity {
         // when the observed data changes and the activity is
         // in the foreground.
 
-        myViewModel.getNodeToDisplay().observe(this, new Observer<Node>(){
-            public void onChanged(@Nullable final Node newValue) {
-                if (newValue != null) {
-                    TextView tv = findViewById(R.id.textView);
-                    tv.setText(newValue.getRoute_id() + "");
-                }
-            }});
 
-        myViewModel.getListRwN().observe(this, new Observer<List<RouteWithNodes>>(){
-            @Override
-            public void onChanged(@Nullable final List<RouteWithNodes> newValue) {
-                Log.d("ROUTES", String.valueOf(newValue.get(0).nodes.size()));
-            }});
+//        myViewModel.getNodeToDisplay().observe(this, new Observer<Node>(){
+//            public void onChanged(@Nullable final Node newValue) {
+//                if (newValue != null) {
+//                    TextView tv = findViewById(R.id.textView);
+//                    tv.setText(newValue.getRoute_id() + "");
+//                }
+//            }});
+
+
 
 
         // it generates a request to generate a new random number

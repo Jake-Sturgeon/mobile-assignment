@@ -11,6 +11,7 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.team.macbook.mobileassigment.database.CompleteRoute;
 import com.team.macbook.mobileassigment.database.Node;
 import com.team.macbook.mobileassigment.database.NodeDAO;
 import com.team.macbook.mobileassigment.database.NodeRoomDatabase;
@@ -23,6 +24,8 @@ import java.util.Random;
 
 class MyRepository extends ViewModel {
     private final NodeDAO mDBDao;
+    protected LiveData<Route> currentRoute;
+
 
     public MyRepository(Application application) {
         NodeRoomDatabase db = NodeRoomDatabase.getDatabase(application);
@@ -37,56 +40,91 @@ class MyRepository extends ViewModel {
         return mDBDao.retrieveOneNode();
     }
 
+    public LiveData<Route> getRouteFromId(String id) {return mDBDao.getRouteFromId(id);}
+
+
     /**
      * called by the UI to request the generation of a new random number
      */
-    public void generateNewNode() {
-        Random r = new Random();
-        int i1 = r.nextInt(10000 - 1) + 1;
-        int i2 = r.nextInt(10000 - 1) + 1;
-        new insertAsyncTask(mDBDao).execute(new Node(1, i2, 0.0, 0.0));
+    public void generateNewNode(int id, double lat, double longi) {
+        new insertNode(mDBDao).execute(new Node(id, 0, lat, longi));
     }
 
-    public void generateNewRoute() {
-        new insertAsyncTaskRoute(mDBDao).execute(new Route());
+    public void generateNewRoute(String title) {
+        new insertRoute(mDBDao).execute(new Route(title));
     }
 
     public LiveData<List<RouteWithNodes>> getRoutesWithNodes(){ return mDBDao.getRoutesWithNodes();}
 
+    public LiveData<RouteWithNodes> getRouteWithNodesFromId(String id){
+        return mDBDao.getRouteNodesFromId(id);
+    }
 
-    private static class insertAsyncTask extends AsyncTask<Node, Void, Void> {
+    public LiveData<CompleteRoute> getCompleteRouteFromId(String id){ return mDBDao.getCompleteRouteFromId(id); }
+
+
+    private static class insertNode extends AsyncTask<Node, Void, Long> {
         private NodeDAO mAsyncTaskDao;
-
-        insertAsyncTask(NodeDAO dao) {
+        insertNode(NodeDAO dao) {
             mAsyncTaskDao = dao;
         }
         @Override
-        protected Void doInBackground(final Node... params) {
-            int id = mAsyncTaskDao.retrieveOneRoute().getRouteId();
-            params[0].setRoute_id(id);
-            mAsyncTaskDao.insert(params[0]);
-            Log.i("MyRepository", "route id generated: "+params[0].getRoute_id()+"");
-            // you may want to uncomment this to check if numbers have been inserted
-            //            int ix=mAsyncTaskDao.howManyElements();
-            //            Log.i("TAG", ix+"");
-            return null;
+        protected Long doInBackground(final Node... params) {
+
+
+            return mAsyncTaskDao.insert(params[0]);
+        }
+
+        @Override
+        protected void onPostExecute(Long id){
+            Log.i("MyRepository", "Node id generated: "+id+"");
         }
     }
 
-    private static class insertAsyncTaskRoute extends AsyncTask<Route, Void, Void> {
+    private static class insertRoute extends AsyncTask<Route, Void, Long> {
         private NodeDAO mAsyncTaskDao;
-
-        insertAsyncTaskRoute(NodeDAO dao) {
+        insertRoute(NodeDAO dao) {
             mAsyncTaskDao = dao;
         }
         @Override
-        protected Void doInBackground(final Route... params) {
-            mAsyncTaskDao.insertRoute(params[0]);
-            Log.i("MyRepository", "route id generated: "+params[0].getRouteId()+"");
-            // you may want to uncomment this to check if numbers have been inserted
-            //            int ix=mAsyncTaskDao.howManyElements();
-            //            Log.i("TAG", ix+"");
-            return null;
+        protected Long doInBackground(final Route... params) {
+            Long id = mAsyncTaskDao.insertRoute(params[0]);
+
+            return id;
+        }
+
+        @Override
+        protected void onPostExecute(Long id) {
+            Log.i("MyRepository", "route id generated: "+id+"");
         }
     }
+
+//    private static class getRoute extends AsyncTask<String, Void, Route> {
+//        private NodeDAO mAsyncTaskDao;
+//        getRoute(NodeDAO dao) {
+//            mAsyncTaskDao = dao;
+//        }
+//        @Override
+//        protected Route doInBackground(final String... params) {
+//            Route returned = mAsyncTaskDao.getRouteFromId(params[0]);
+//            return returned;
+//        }
+//        protected void onPostExecute(Route result) {
+//            showDialog("Downloaded " + result + " bytes");
+//            currentRoute = LiveData
+//        }
+//    }
+//
+//    private static class insertRoute extends AsyncTask<Route, Void, Void> {
+//        private NodeDAO mAsyncTaskDao;
+//        insertRoute(NodeDAO dao) {
+//            mAsyncTaskDao = dao;
+//        }
+//        @Override
+//        protected Void doInBackground(final Route... params) {
+//            mAsyncTaskDao.insertRoute(params[0]);
+//            Log.i("MyRepository", "route id generated: "+params[0].getRouteId()+"");
+//            return null;
+//        }
+//    }
 }

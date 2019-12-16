@@ -2,6 +2,7 @@ package com.team.macbook.mobileassigment;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.graphics.Color;
 import android.location.Location;
 import android.util.Log;
 
@@ -10,13 +11,21 @@ import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class LocationService extends IntentService {
     private Location mCurrentLocation;
     private String mLastUpdateTime;
+
+    private List<LatLng> points = new ArrayList<LatLng>();
+
+    Polyline line; //added
 
     public LocationService(String name) {
         super(name);
@@ -38,29 +47,40 @@ public class LocationService extends IntentService {
             if (locResults != null) {
                 for (Location location : locResults.getLocations()) {
                     if (location == null) continue;
+                    //do something with the location
                     Log.i("New Location", "Current location: " + location);
                     mCurrentLocation = location;
                     mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
                     Log.i("MAP", "new location " + mCurrentLocation.toString());
-                    if (MapsActivity.getActivity() != null)
+                    // check if the activity has not been closed in the meantime
+                    if (MapsActivity.getActivity()!=null)
+                        // any modification of the user interface must be done on the UI Thread. The Intent Service is running
+                        // in its own thread, so it cannot communicate with the UI.
                         MapsActivity.getActivity().runOnUiThread(new Runnable() {
                             public void run() {
                                 try {
-                                    if (MapsActivity.getMap() != null)
-                                        MapsActivity.getMap().addMarker(new MarkerOptions().position(new
-                                                LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude())).title(mLastUpdateTime));
-                                    CameraUpdate zoom = CameraUpdateFactory.zoomTo(15);
-                                    MapsActivity.getMap().moveCamera(CameraUpdateFactory.newLatLng(new
-                                            LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()))); // it moves the camera to the selected zoom
-                                    MapsActivity.getMap().animateCamera(zoom);
-                                } catch (Exception e) {
-                                    Log.e("LocationIntent", "Error cannot write on map " + e.getMessage());
+                                    if (MapsActivity.getMap() != null) {
+                                        MapsActivity.getMap().addMarker(new MarkerOptions().position(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()))
+                                                .title(mLastUpdateTime));
+                                        CameraUpdate zoom = CameraUpdateFactory.zoomTo(15);
+                                        // it centres the camera around the new location
+                                        MapsActivity.getMap().moveCamera(CameraUpdateFactory.newLatLng(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude())));
+                                        // it moves the camera to the selected zoom
+                                        MapsActivity.getMap().animateCamera(zoom);
+
+                                    }
+
+
+
+
+                                } catch (Exception e ){
+                                    Log.e("LocationService", "Error cannot write on map "+e.getMessage());
                                 }
                             }
                         });
-
                 }
             }
+
         }
     }
 }

@@ -4,7 +4,7 @@
     <string name="started">Started</string>
     <string name="stopped">Stopped</string>
     <string name="title_activity_maps">Map</string>
-    <string name="button">Button</string>
+    <string name="button_map">Map</string>
 
     <string name="button_start">Start</string>
     <string name="button_end">End</string>

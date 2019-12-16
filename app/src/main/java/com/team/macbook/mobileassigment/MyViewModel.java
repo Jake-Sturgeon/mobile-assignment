@@ -5,15 +5,22 @@
 package com.team.macbook.mobileassigment;
 
 import android.app.Application;
+import android.util.Log;
 
+import androidx.annotation.Nullable;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 
+import com.team.macbook.mobileassigment.database.CompleteRoute;
 import com.team.macbook.mobileassigment.database.Node;
+import com.team.macbook.mobileassigment.database.Route;
 import com.team.macbook.mobileassigment.database.RouteWithNodes;
 
 import java.util.List;
+import java.util.Observable;
 
 
 public class MyViewModel extends AndroidViewModel {
@@ -21,25 +28,30 @@ public class MyViewModel extends AndroidViewModel {
 
     LiveData<Node> nodeDataToDisplay;
     LiveData<List<RouteWithNodes>> rwN_list;
+    LiveData<Route> route;
     private Barometer barometer;
     private Accelerometer accelerometer;
     private Thermometer thermometer;
     private boolean started = false;
     private MutableLiveData<String> text;
-
+    private MutableLiveData<CompleteRoute> cr = new MutableLiveData<>();
 
     public MyViewModel (Application application) {
         super(application);
         // creation and connection to the Repository
         mRepository = new MyRepository(application);
-        generateNewRoute();
+        generateNewRoute("Initial");
 
         nodeDataToDisplay = mRepository.getNode();
+        route = mRepository.getRouteFromId("1");
         rwN_list = mRepository.getRoutesWithNodes();
         barometer= new Barometer(application);
         accelerometer = new Accelerometer(application, barometer);
         thermometer = new Thermometer(application);
+
+        generateNewNode();
     }
+
 
     public LiveData<String> getStartStop() {
         if (text == null) {
@@ -68,26 +80,14 @@ public class MyViewModel extends AndroidViewModel {
      * getter for the live data
      * @return
      */
-    LiveData<Node> getNodeToDisplay() {
-        if (nodeDataToDisplay == null) {
-            nodeDataToDisplay = new MutableLiveData<Node>();
-        }
-        return nodeDataToDisplay;
-    }
 
-    LiveData<List<RouteWithNodes>> getListRwN(){
-        if (rwN_list == null) {
-            rwN_list = new MutableLiveData<List<RouteWithNodes>>();
-        }
-        return rwN_list;
-    }
 
-    public void generateNewRoute() {
-        mRepository.generateNewRoute();
+    public void generateNewRoute( String title) {
+        mRepository.generateNewRoute(title);
     }
 
     public void generateNewNode() {
-        mRepository.generateNewNode();
+        mRepository.generateNewNode(1, 1, 1);
     }
 
     public void pauseBarometer(){
@@ -113,4 +113,25 @@ public class MyViewModel extends AndroidViewModel {
     public void startAccelerometer(){
         accelerometer.startAccelerometerRecording();
     }
+
+
+
+    public void setCR(String id, LifecycleOwner thread) {
+        LiveData<CompleteRoute> temp = mRepository.getCompleteRouteFromId(id);
+        temp.observe(thread, new Observer<CompleteRoute>() {
+            @Override
+            public void onChanged(@Nullable final CompleteRoute newValue) {
+                cr.postValue(newValue);
+            }
+        });
+
+    }
+
+    public MutableLiveData<CompleteRoute> getCR() {
+        if (cr == null) {
+            cr = new MutableLiveData<CompleteRoute>();
+        }
+        return cr;
+    }
+
 }

@@ -21,8 +21,11 @@ public class Route {
     @PrimaryKey(autoGenerate = true)
     @androidx.annotation.NonNull
     private int routeId = 0;
+    @androidx.annotation.NonNull
+    private String title;
 
-    public Route() {
+    public Route(String title) {
+        this.title = title;
     }
 
     @androidx.annotation.NonNull
@@ -31,6 +34,13 @@ public class Route {
     }
     public void setRouteId(@androidx.annotation.NonNull int id) {
         this.routeId = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+    public void setTitle(@androidx.annotation.NonNull String title) {
+        this.title = title;
     }
 
 
