@@ -43,9 +43,12 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.team.macbook.mobileassigment.database.CompleteRoute;
+import com.team.macbook.mobileassigment.database.Edge;
 
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.List;
 
 import pl.aprilapps.easyphotopicker.EasyImage;
 
@@ -61,6 +64,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Button mButtonEnd;
     private PendingIntent mLocationPendingIntent;
     private static final float SMALLEST_DISPLACEMENT = 0.5F;
+    Polyline line;
 
 
     private MyMapModel myMapModel;
@@ -174,6 +178,35 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             }
         });
+
+
+//
+        myMapModel.getCRID("1").observe(this, new Observer<CompleteRoute>() {
+            @Override
+            public void onChanged(@Nullable final CompleteRoute newValue) {
+                if (newValue != null) {
+                    Log.i("EDGE M", newValue.toString());
+                    Log.i("EDGE M", newValue.edges.toString());
+                    for(Edge edge : newValue.edges){
+                        Log.i("EDGE M", edge.latitude+ " " + edge.latitude);
+                    }
+                    if (line != null) {
+                        mMap.clear();
+                    }
+                    PolylineOptions options = new PolylineOptions().width(5).color(Color.BLUE);
+                    for (Edge edge : newValue.edges) {
+                        LatLng point = new LatLng(edge.longitude,edge.latitude);
+                        options.add(point);
+                    }
+                    line = mMap.addPolyline(options);
+                    if(options.getPoints().size() > 0) {
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(options.getPoints().get(options.getPoints().size() - 1), 15.0f));
+                    }
+                }
+            }
+        });
+
+        myMapModel.setCR("1",getActivity());
 
 
 
