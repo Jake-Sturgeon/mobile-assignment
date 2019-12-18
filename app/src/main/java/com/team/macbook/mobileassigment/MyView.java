@@ -4,6 +4,7 @@
 
 package com.team.macbook.mobileassigment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -30,12 +32,25 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
+import pl.aprilapps.easyphotopicker.EasyImage;
+
 
 public class MyView extends AppCompatActivity {
     private MyViewModel myViewModel;
     private DBFragment db_frag;
     private CurrentFragment current_frag;
     private HomeFragment home_frag;
+
+    private void initEasyImage() {
+        EasyImage.configuration(this)
+                .setImagesFolderName("EasyImage sample")
+// it adds new pictures to the gallery
+                        .setCopyTakenPhotosToPublicGalleryAppFolder(true)
+// probably unnecessary
+                        .setCopyPickedImagesToPublicGalleryAppFolder(false)
+// it allows to select multiple pictures in the gallery
+                        .setAllowMultiplePickInGallery(true);
+    }
 
 
     public void switchViewDB(MenuItem item){
@@ -117,6 +132,13 @@ public class MyView extends AppCompatActivity {
                         current_frag = new CurrentFragment();
                     }
 
+                    fab.setOnClickListener(new View.OnClickListener() {
+                       @Override
+                       public void onClick(View view) {
+                           EasyImage.openCamera(current_frag, 0);
+                       }
+                   });
+
                     FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                     transaction.replace(R.id.fragment_container, current_frag);
                     transaction.commit();
@@ -134,9 +156,22 @@ public class MyView extends AppCompatActivity {
                     FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                     transaction.replace(R.id.fragment_container, home_frag);
                     transaction.commit();
+                    fab.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if (db_frag == null){
+                                db_frag = new DBFragment();
+                            }
+
+                            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                            transaction.replace(R.id.fragment_container, db_frag);
+                            transaction.commit();
+                        }
+                    });
                 }
             }
         });
+        initEasyImage();
     }
 
     @Override
