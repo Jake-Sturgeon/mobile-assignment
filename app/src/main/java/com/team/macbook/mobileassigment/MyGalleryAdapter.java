@@ -56,6 +56,7 @@ public class MyGalleryAdapter extends RecyclerView.Adapter<MyGalleryAdapter.View
                 public void onClick(View v) {
                     myViewModel.setViewItemSingle(items.get(position));
 
+
                 }
             });
         }
@@ -71,13 +72,9 @@ public class MyGalleryAdapter extends RecyclerView.Adapter<MyGalleryAdapter.View
     }
 
     public class View_Holder extends RecyclerView.ViewHolder {
-        TextView title;
-        TextView preview;
         ImageView imageView;
         View_Holder(View itemView) {
             super(itemView);
-            title = (TextView) itemView.findViewById(R.id.title);
-            preview = (TextView) itemView.findViewById(R.id.preview);
             imageView = (ImageView) itemView.findViewById(R.id.image_item);
         }
     }
