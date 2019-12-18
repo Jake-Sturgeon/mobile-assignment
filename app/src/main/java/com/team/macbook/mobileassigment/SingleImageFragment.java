@@ -61,6 +61,10 @@ public class SingleImageFragment extends Fragment {
                     ImageView imageView = (ImageView) view.findViewById(R.id.image);
 
                     TextView dateTextView = (TextView)  view.findViewById(R.id.singleImageDate);
+                    TextView pressTextView = (TextView)  view.findViewById(R.id.singleImagePressure);
+                    pressTextView.setText(element.getBar()+"");
+                    TextView tempTextView = (TextView)  view.findViewById(R.id.singleImageTemp);
+                    tempTextView.setText(element.getTemp()+"");
 //                    if (element.nodes.get(0).getPicture_id() != -1) {
 //
 //                    }

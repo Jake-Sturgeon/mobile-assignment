@@ -73,10 +73,10 @@
                     android:text="TextView" />
 
                 <TextView
-                    android:id="@+id/singleImageTimeTaken"
+                    android:id="@+id/singleImageTemp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="singleImageTimeTaken" />
+                    android:text="singleImageTemp" />
             </TableRow>
 
             <TableRow
