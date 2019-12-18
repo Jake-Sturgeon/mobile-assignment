@@ -13,6 +13,7 @@ import com.team.macbook.mobileassigment.database.CompleteRoute;
 
 public class MyMapModel extends AndroidViewModel {
     private final MyRepository mRepository;
+    private String current;
 
     private MutableLiveData<CompleteRoute> cr = new MutableLiveData<>();
 
@@ -34,19 +35,27 @@ public class MyMapModel extends AndroidViewModel {
 
     }
 
-    public void generateNewNode(int currentRoute, double lat, double lon) {
-        mRepository.generateNewNode(1, lat, lon);
+    public void generateNewNode(String currentRoute, double lat, double lon, String picture, float temp, float bar) {
+        mRepository.generateNewNode(currentRoute, lat, lon, picture, temp, bar);
     }
 
-    public void generateNewEdge(int currentRoute ,double lat, double lon) {
-        mRepository.generateNewEdge(1, lat, lon);
+    public void generateNewEdge(String currentRoute ,double lat, double lon) {
+        mRepository.generateNewEdge(currentRoute, lat, lon);
     }
 
-    public LiveData<CompleteRoute> getCRID(String id) {
+    public LiveData<CompleteRoute> getCRID() {
         if (cr == null) {
             cr =  new MutableLiveData<CompleteRoute>();
         }
         return cr;
+    }
+
+    public String getCurrentID(){
+        return current;
+    }
+
+    public void setCurrent(String c){
+        this.current = c;
     }
 
 }

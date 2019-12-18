@@ -13,16 +13,37 @@ public class Node {
     @PrimaryKey(autoGenerate = true)
     @androidx.annotation.NonNull
     private int id = 0;
-    private int route_id = 0;
-    private int picture_id = 0;
+    private String route_id = "";
+    private String picture_id = "";
     private double latitude = 0.0;
     private double longitude = 0.0;
+    private float temp;
+    private float bar;
 
-    public Node(int route_id, int picture_id, double latitude, double longitude) {
+
+    public Node(String route_id, String picture_id, double latitude, double longitude, float temp, float bar) {
         this.route_id = route_id;
         this.picture_id = picture_id;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.temp = temp;
+        this.bar = bar;
+    }
+
+    public float getTemp() {
+        return temp;
+    }
+
+    public void setTemp(float temp) {
+        this.temp = temp;
+    }
+
+    public float getBar() {
+        return bar;
+    }
+
+    public void setBar(float bar) {
+        this.bar = bar;
     }
 
     @androidx.annotation.NonNull
@@ -33,19 +54,19 @@ public class Node {
         this.id = id;
     }
 
-    public int getRoute_id() {
+    public String getRoute_id() {
         return route_id;
     }
 
-    public void setRoute_id(int route_id) {
+    public void setRoute_id(String route_id) {
         this.route_id = route_id;
     }
 
-    public int getPicture_id() {
+    public String getPicture_id() {
         return picture_id;
     }
 
-    public void setPicture_id(int picture_id) {
+    public void setPicture_id(String picture_id) {
         this.picture_id = picture_id;
     }
 

@@ -94,13 +94,11 @@ public class MyViewModel extends AndroidViewModel {
      */
 
 
-    public void generateNewRoute( String title) {
-        mRepository.generateNewRoute(title);
+    public void generateNewRoute(String id, String title) {
+
+        mRepository.generateNewRoute(id, title);
     }
 
-    public void generateNewNode() {
-        mRepository.generateNewNode(1, 1, 1);
-    }
 
     public void pauseBarometer(){
         barometer.stopBarometer();

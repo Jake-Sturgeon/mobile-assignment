@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,6 +37,7 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -46,6 +48,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.team.macbook.mobileassigment.database.CompleteRoute;
 import com.team.macbook.mobileassigment.database.Edge;
+import com.team.macbook.mobileassigment.database.Node;
 
 import java.io.File;
 import java.text.DateFormat;
@@ -65,10 +68,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private PendingIntent mLocationPendingIntent;
     private static final float SMALLEST_DISPLACEMENT = 0.5F;
 
+
     private Thermometer temp;
     private Barometer bar;
     private Accelerometer acc;
 
+
+    private String currentRoute;
     private Polyline line;
 
     private MyMapModel myMapModel;
@@ -77,13 +83,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         EasyImage.handleActivityResult(requestCode, resultCode, data, this,
                 new DefaultCallback() {
                     @Override
                     public void onImagesPicked(List<File> imageFiles, EasyImage.ImageSource source,
                                                int type) {
-                        Log.d("Images", "Image picked: " + imageFiles.get(0).toString());
 
+                        Log.d("Images", "Image picked: "+imageFiles.get(0).toString());
+                        final String imageS = imageFiles.get(0).toString();
                         mFusedLocationClient.getLastLocation()
                                 .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
                                     @Override
@@ -92,12 +100,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                         if (location != null) {
                                             LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
 
+
+                                            float t = temp.getTemp();
+                                            float b = bar.getPressureValue();
                                             Log.i("Location", "Image loc: " + loc.toString());
-                                            Log.i("Location", "Temp: " + temp.getTemp());
-                                            Log.i("Location", "Bar: " + bar.getPressureValue());
+                                            Log.i("Location", "Temp: " + t);
+                                            Log.i("Location", "Bar: " + b);
 
 
-                                            mMap.addMarker(new MarkerOptions().position(loc));
+//                                            mMap.addMarker(new MarkerOptions().position(loc)
+//                                                    .title("Sensor Reading").snippet("Temp: " + t + "\nPressure: " + b));
+                                            myMapModel.generateNewNode(currentRoute, location.getLatitude(), location.getLongitude(), imageS, t, b);
                                         }
                                     }
                                 });
@@ -167,11 +180,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             this.getSupportActionBar().hide();
         } catch (NullPointerException e) {
         }
+        Intent intent = getIntent();
+        currentRoute = intent.getStringExtra("current_route");
+        myMapModel = ViewModelProviders.of(this).get(MyMapModel.class);
+        myMapModel.setCurrent(currentRoute);
+        Log.d("Current_Route", currentRoute);
+
         initEasyImage();
         setContentView(R.layout.activity_maps);
         setActivity(this);
 
-        myMapModel = ViewModelProviders.of(this).get(MyMapModel.class);
+
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -200,14 +219,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
 //
-        myMapModel.getCRID("1").observe(this, new Observer<CompleteRoute>() {
+        myMapModel.getCRID().observe(this, new Observer<CompleteRoute>() {
             @Override
             public void onChanged(@Nullable final CompleteRoute newValue) {
                 if (newValue != null) {
                     Log.i("EDGE M", newValue.toString());
                     Log.i("EDGE M", newValue.edges.toString());
-                    for (Edge edge : newValue.edges) {
-                        Log.i("EDGE M", edge.latitude + " " + edge.latitude);
+
+                    Log.i("NODES", String.valueOf(newValue.nodes.size()));
+                    for(Edge edge : newValue.edges){
+                        Log.i("EDGE M", edge.latitude+ " " + edge.longitude);
                     }
                     if (line != null) {
                         mMap.clear();
@@ -217,6 +238,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         LatLng point = new LatLng(edge.longitude, edge.latitude);
                         options.add(point);
                     }
+                    for (Node node : newValue.nodes) {
+                        LatLng point = new LatLng(node.getLatitude(), node.getLongitude());
+                        mMap.addMarker(new MarkerOptions().position(point).snippet("Temp: " + node.getTemp() + "\nPressure: " + node.getBar()));
+                    }
                     line = mMap.addPolyline(options);
                     if (options.getPoints().size() > 0) {
                         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(options.getPoints().get(options.getPoints().size() - 1), 15.0f));
@@ -224,8 +249,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             }
         });
-
-        myMapModel.setCR("1", getActivity());
+        myMapModel.setCR(currentRoute, getActivity());
 
 
     }
@@ -378,4 +402,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
     }
+
+
 }

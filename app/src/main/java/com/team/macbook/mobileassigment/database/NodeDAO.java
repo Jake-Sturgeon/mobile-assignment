@@ -41,7 +41,7 @@ public interface NodeDAO {
     void insertAllRoutes(Route... route);
 
     @Insert
-    long insertRoute(Route route);
+    void insertRoute(Route route);
 
     @Delete
     void deleteRoute(Route route);

@@ -41,12 +41,14 @@ public class LocationService extends IntentService {
     private static final String TAG = "INTENTS";
     private Location mCurrentLocation;
     private String mLastUpdateTime;
+    private String currentRoute;
 
     private MyMapModel myMapModel;
 
     @Override
     public void onCreate() {
         myMapModel = ViewModelProviders.of(MapsActivity.getActivity()).get(MyMapModel.class);
+        currentRoute = myMapModel.getCurrentID();
         super.onCreate();
     }
 
@@ -72,7 +74,7 @@ public class LocationService extends IntentService {
                     mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
                     Log.i("MAP", "new location Intent " + mCurrentLocation.toString());
                     Log.i(LocationService.class.getName(),"this is working");
-                    myMapModel.generateNewEdge(1, mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+                    myMapModel.generateNewEdge(currentRoute, mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
                     // check if the activity has not been closed in the meantime
 //                    if (MapsActivity.getActivity()!=null)
 //                        // any modification of the user interface must be done on the UI Thread. The Intent Service is running
