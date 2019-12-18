@@ -41,16 +41,7 @@ public class MyView extends AppCompatActivity {
     private CurrentFragment current_frag;
     private HomeFragment home_frag;
 
-    private void initEasyImage() {
-        EasyImage.configuration(this)
-                .setImagesFolderName("EasyImage sample")
-// it adds new pictures to the gallery
-                        .setCopyTakenPhotosToPublicGalleryAppFolder(true)
-// probably unnecessary
-                        .setCopyPickedImagesToPublicGalleryAppFolder(false)
-// it allows to select multiple pictures in the gallery
-                        .setAllowMultiplePickInGallery(true);
-    }
+
 
 
     public void switchViewDB(MenuItem item){
@@ -110,6 +101,15 @@ public class MyView extends AppCompatActivity {
             }
         });
 
+//        myViewModel.getNodeToDisplay().observe(this, new Observer<Node>(){
+//            public void onChanged(@Nullable final Node newValue) {
+//                if (newValue != null) {
+//                    TextView tv = findViewById(R.id.textView);
+//                    tv.setText(newValue.getRoute_id() + "");
+//                }
+//            }});
+
+
 
         Fragment newFragment = new HomeFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -128,20 +128,10 @@ public class MyView extends AppCompatActivity {
                     MenuItem i = ((BottomNavigationView)findViewById(R.id.bottom_navigation)).getMenu().getItem(0);
                     i.setIcon(drawable.ic_menu_compass);
                     i.setTitle(R.string.menu_item_1_alt);
-                    if (current_frag == null){
-                        current_frag = new CurrentFragment();
-                    }
 
-                    fab.setOnClickListener(new View.OnClickListener() {
-                       @Override
-                       public void onClick(View view) {
-                           EasyImage.openCamera(current_frag, 0);
-                       }
-                   });
+                    Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
+                    startActivity(intent);
 
-                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                    transaction.replace(R.id.fragment_container, current_frag);
-                    transaction.commit();
                 } else {
                     Log.d("Route Tracking", "Inactive");
                     FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.new_fab);
@@ -171,7 +161,7 @@ public class MyView extends AppCompatActivity {
                 }
             }
         });
-        initEasyImage();
+
     }
 
     @Override

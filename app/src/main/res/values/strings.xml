@@ -4,6 +4,11 @@
     <string name="started">Started</string>
     <string name="stopped">Stopped</string>
     <string name="title_activity_maps">Map</string>
+    <string name="button_map">Map</string>
+
+    <string name="button_start">Start</string>
+    <string name="button_end">End</string>
+
     <string name="button">Button</string>
     <string name="menu_item_1">Add</string>
     <string name="menu_item_2">My Routes</string>
@@ -14,4 +19,9 @@
     <string name="new_route_hint">Title...</string>
     <string name="create_button_text">Begin</string>
     <string name="menu_item_1_alt">Current Route</string>
+    <string name="map_menu_1">Start</string>
+    <string name="map_menu_2">Pause</string>
+    <string name="map_menu_3">Create a Moment</string>
+    <string name="map_menu_4">Save Route</string>
+
 </resources>

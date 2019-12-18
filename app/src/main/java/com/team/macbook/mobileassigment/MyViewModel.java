@@ -93,7 +93,7 @@ public class MyViewModel extends AndroidViewModel {
      */
 
 
-    public void generateNewRoute(String title) {
+    public void generateNewRoute( String title) {
         mRepository.generateNewRoute(title);
     }
 
