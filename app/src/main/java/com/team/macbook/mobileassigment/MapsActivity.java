@@ -54,7 +54,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private PendingIntent mLocationPendingIntent;
     private static final float SMALLEST_DISPLACEMENT = 0.5F;
 
-    private MyViewModel myViewModel;
+
+    private MyMapModel myMapModel;
 
     public static AppCompatActivity getActivity() {
         return activity;
@@ -74,7 +75,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         setContentView(R.layout.activity_maps);
         setActivity(this);
 
-        myViewModel = ViewModelProviders.of(this).get(MyViewModel.class);
+        myMapModel = ViewModelProviders.of(this).get(MyMapModel.class);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -254,10 +255,5 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        Polyline line = mMap.addPolyline(new PolylineOptions()
-                .add(new LatLng(51.5, -0.1), new LatLng(40.7, -74.0))
-                .width(5)
-                .color(Color.RED));
-
     }
 }
