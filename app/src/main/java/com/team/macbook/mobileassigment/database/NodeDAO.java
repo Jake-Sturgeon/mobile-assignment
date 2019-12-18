@@ -21,6 +21,9 @@ public interface NodeDAO {
     @Insert
     long insert(Node node);
 
+    @Insert
+    long insert(Edge edge);
+
     @Delete
     void delete(Node node);
 

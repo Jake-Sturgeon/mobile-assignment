@@ -12,6 +12,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.team.macbook.mobileassigment.database.CompleteRoute;
+import com.team.macbook.mobileassigment.database.Edge;
 import com.team.macbook.mobileassigment.database.Node;
 import com.team.macbook.mobileassigment.database.NodeDAO;
 import com.team.macbook.mobileassigment.database.NodeRoomDatabase;
@@ -51,6 +52,10 @@ class MyRepository extends ViewModel {
         new insertNode(mDBDao).execute(new Node(id, 0, lat, longi));
     }
 
+    public void generateNewEdge(int id, double lat, double longi) {
+        new insertEdge(mDBDao).execute(new Edge(id, 0, lat, longi));
+    }
+
     public void generateNewRoute(String title) {
         new insertRoute(mDBDao).execute(new Route(title, Calendar.getInstance().getTimeInMillis()));
     }
@@ -81,6 +86,24 @@ class MyRepository extends ViewModel {
         @Override
         protected void onPostExecute(Long id){
             Log.i("MyRepository", "Node id generated: "+id+"");
+        }
+    }
+
+    private static class insertEdge extends AsyncTask<Edge, Void, Long> {
+        private NodeDAO mAsyncTaskDao;
+        insertEdge(NodeDAO dao) {
+            mAsyncTaskDao = dao;
+        }
+        @Override
+        protected Long doInBackground(final Edge... params) {
+
+
+            return mAsyncTaskDao.insert(params[0]);
+        }
+
+        @Override
+        protected void onPostExecute(Long id){
+            Log.i("MyRepository", "Edge id generated: "+id+"");
         }
     }
 

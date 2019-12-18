@@ -59,6 +59,8 @@ public class HomeFragment extends Fragment {
                     Log.d("HomeFrag", "Setting Items len "+newValue.size()+"");
                     mAdapter.setItems(newValue);
 
+                    if (newValue.size() > 0)
+                        Log.d("ROU", "" + newValue.get(0).edges.size());
                 }
             }});
 

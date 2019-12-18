@@ -17,6 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -41,8 +42,13 @@ public class LocationService extends IntentService {
     private Location mCurrentLocation;
     private String mLastUpdateTime;
 
+    private MyMapModel myMapModel;
 
-
+    @Override
+    public void onCreate() {
+        myMapModel = ViewModelProviders.of(MapsActivity.getActivity()).get(MyMapModel.class);
+        super.onCreate();
+    }
 
     public LocationService() {
         super("Location Intent");
@@ -66,32 +72,33 @@ public class LocationService extends IntentService {
                     mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
                     Log.i("MAP", "new location Intent " + mCurrentLocation.toString());
                     Log.i(LocationService.class.getName(),"this is working");
+                    myMapModel.generateNewEdge(1, mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
                     // check if the activity has not been closed in the meantime
-//                    if (MapsActivity.getActivity()!=null)
-//                        // any modification of the user interface must be done on the UI Thread. The Intent Service is running
-//                        // in its own thread, so it cannot communicate with the UI.
-//                        MapsActivity.getActivity().runOnUiThread(new Runnable() {
-//                            public void run() {
-//                                try {
-//                                    if (MapsActivity.getMap() != null) {
-//                                        MapsActivity.getMap().addMarker(new MarkerOptions().position(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()))
-//                                                .title(mLastUpdateTime));
-//                                        CameraUpdate zoom = CameraUpdateFactory.zoomTo(15);
-//                                        // it centres the camera around the new location
-//                                        MapsActivity.getMap().moveCamera(CameraUpdateFactory.newLatLng(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude())));
-//                                        // it moves the camera to the selected zoom
-//                                        MapsActivity.getMap().animateCamera(zoom);
-//
-//                                    }
-//
-//
-//
-//
-//                                } catch (Exception e ){
-//                                    Log.e("LocationService", "Error cannot write on map "+e.getMessage());
-//                                }
-//                            }
-//                        });
+                    if (MapsActivity.getActivity()!=null)
+                        // any modification of the user interface must be done on the UI Thread. The Intent Service is running
+                        // in its own thread, so it cannot communicate with the UI.
+                        MapsActivity.getActivity().runOnUiThread(new Runnable() {
+                            public void run() {
+                                try {
+                                    if (MapsActivity.getMap() != null) {
+                                        MapsActivity.getMap().addMarker(new MarkerOptions().position(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()))
+                                                .title(mLastUpdateTime));
+                                        CameraUpdate zoom = CameraUpdateFactory.zoomTo(15);
+                                        // it centres the camera around the new location
+                                        MapsActivity.getMap().moveCamera(CameraUpdateFactory.newLatLng(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude())));
+                                        // it moves the camera to the selected zoom
+                                        MapsActivity.getMap().animateCamera(zoom);
+
+                                    }
+
+
+
+
+                                } catch (Exception e ){
+                                    Log.e("LocationService", "Error cannot write on map "+e.getMessage());
+                                }
+                            }
+                        });
                 }
             }
 
