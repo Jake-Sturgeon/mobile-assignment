@@ -28,6 +28,7 @@ public class MyViewModel extends AndroidViewModel {
 
     LiveData<Node> nodeDataToDisplay;
     LiveData<List<RouteWithNodes>> rwN_list;
+
     LiveData<Route> route;
     private Barometer barometer;
     private Accelerometer accelerometer;
@@ -35,12 +36,14 @@ public class MyViewModel extends AndroidViewModel {
     private boolean started = false;
     private MutableLiveData<String> text;
     private MutableLiveData<CompleteRoute> cr = new MutableLiveData<>();
+    private LiveData<List<CompleteRoute>> a_cr;
+
+    private MutableLiveData<Boolean> route_active = new MutableLiveData<Boolean>(false);
 
     public MyViewModel (Application application) {
         super(application);
         // creation and connection to the Repository
         mRepository = new MyRepository(application);
-        generateNewRoute("Initial");
 
         nodeDataToDisplay = mRepository.getNode();
         route = mRepository.getRouteFromId("1");
@@ -48,8 +51,16 @@ public class MyViewModel extends AndroidViewModel {
         barometer= new Barometer(application);
         accelerometer = new Accelerometer(application, barometer);
         thermometer = new Thermometer(application);
+        a_cr = mRepository.getAllCompleteRoutes();
 
-        generateNewNode();
+    }
+
+    public LiveData<Boolean> getRoute_active(){
+        return route_active;
+    }
+
+    public void setRoute_active(boolean b){
+        route_active.postValue(b);
     }
 
 
@@ -132,6 +143,13 @@ public class MyViewModel extends AndroidViewModel {
             cr = new MutableLiveData<CompleteRoute>();
         }
         return cr;
+    }
+
+    public LiveData<List<CompleteRoute>> getAllCompleteRoutes() {
+        if (a_cr == null) {
+            a_cr = new MutableLiveData<List<CompleteRoute>>();
+        }
+        return a_cr;
     }
 
 }

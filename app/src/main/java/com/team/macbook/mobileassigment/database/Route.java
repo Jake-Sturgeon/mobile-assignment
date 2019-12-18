@@ -12,6 +12,7 @@ import androidx.room.PrimaryKey;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -24,7 +25,20 @@ public class Route {
     @androidx.annotation.NonNull
     private String title;
 
-    public Route(String title) {
+    @NonNull
+    public long getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(@NonNull long startDate) {
+        this.startDate = startDate;
+    }
+
+    @androidx.annotation.NonNull
+    private long startDate;
+
+    public Route(String title, long startDate) {
+        this.startDate = startDate;
         this.title = title;
     }
 

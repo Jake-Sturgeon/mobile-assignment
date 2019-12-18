@@ -72,4 +72,8 @@ public interface NodeDAO {
     @Query("SELECT * FROM route WHERE routeId == :id")
     LiveData<CompleteRoute> getCompleteRouteFromId(String id);
 
+    @Transaction
+    @Query("SELECT * FROM route")
+    LiveData<List<CompleteRoute>> getAllCompleteRoutes();
+
 }
