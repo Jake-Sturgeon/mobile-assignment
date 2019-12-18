@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.team.macbook.mobileassigment.database.CompleteRoute;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -56,13 +57,15 @@ public class SingleImageFragment extends Fragment {
                 if (element != null) {
                     System.out.println("HELLO JAKE");
                     ImageView imageView = (ImageView) view.findViewById(R.id.image);
-                    TextView textView = (TextView) view.findViewById(R.id.singleImageTitle);
-
+                    TextView titleTextView = (TextView) view.findViewById(R.id.singleImageTitle);
+                    TextView dateTextView = (TextView)  view.findViewById(R.id.singleImageDate);
 //                    if (element.nodes.get(0).getPicture_id() != -1) {
 //
 //                    }
                     imageView.setImageResource(R.drawable.joe1);
-                    textView.setText(element.route.getTitle());
+                    titleTextView.setText(element.route.getTitle());
+                    dateTextView.setText(String.valueOf(new Date(element.route.getStartDate())));
+
 
                 }
             }});

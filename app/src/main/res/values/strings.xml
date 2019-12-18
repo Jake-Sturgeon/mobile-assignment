@@ -25,6 +25,7 @@
     <string name="map_menu_3">Create a Moment</string>
     <string name="map_menu_4">Save Route</string>
 
-    <string name="single_image_title">SINGLE IMAGE</string>
+    <string name="single_image_title">Route Title</string>
+    <string name="single_image_date">Date Taken</string>
 
 </resources>

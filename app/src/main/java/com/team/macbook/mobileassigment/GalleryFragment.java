@@ -41,19 +41,16 @@ public class GalleryFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_gallery, container, false);
         myViewModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
         mAdapter = new MyGalleryAdapter(new ArrayList<CompleteRoute>(), myViewModel);
-
         mRecyclerView = (RecyclerView) view.findViewById(R.id.my_list);
         // set up the RecyclerView
         int numberOfColumns = 4;
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), numberOfColumns));
 
-        //mRecyclerView.setHasFixedSize(true);
-        //mLayoutManager = new LinearLayoutManager(getContext());
-        //mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
 
         myViewModel.getAllCompleteRoutes().observe(this, new Observer<List<CompleteRoute>>(){
