@@ -4,13 +4,17 @@
 
 package com.team.macbook.mobileassigment;
 
+import android.app.IntentService;
 import android.content.Context;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.SystemClock;
 import android.util.Log;
+
+import androidx.annotation.Nullable;
 
 
 public class Thermometer {
@@ -22,9 +26,11 @@ public class Thermometer {
     private long THERMOMETER_READING_FREQUENCY= 3000;
     private long mSamplingRateNano;
     private long lastReportTime = 0;
-    private float lastX=0;
-    private float lastY=0;
-    private float lastZ=0;
+    private float lastX = 0;
+    private float lastY = 0;
+    private float lastZ = 0;
+
+    private float temp;
 
     public Thermometer(Context context) {
         // http://androidforums.com/threads/how-to-get-time-of-last-system-boot.548661/
@@ -49,7 +55,7 @@ public class Thermometer {
 
                     long diff = event.timestamp - lastReportTime;
                     if (diff >= mSamplingRateNano) {
-                        float temp = event.values[0];
+                        temp = event.values[0];
                         long actualTimeInMseconds = timePhoneWasLastRebooted + (long) (event.timestamp / 1000000.0);
                         int accuracy = event.accuracy;
 
@@ -106,6 +112,7 @@ public class Thermometer {
         }
     }
 
+    public float getTemp() {return temp;}
 
     public long getLastReportTime() {
         return lastReportTime;
