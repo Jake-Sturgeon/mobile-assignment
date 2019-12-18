@@ -1,6 +1,7 @@
 package com.team.macbook.mobileassigment;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,6 +18,8 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.team.macbook.mobileassigment.database.CompleteRoute;
+
+import java.util.UUID;
 
 
 /**
@@ -78,9 +81,13 @@ public class DBFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 EditText title = view.findViewById(R.id.inputTitle);
-                myViewModel.generateNewRoute(title.getText().toString());
-                Log.d("Creating route", title.getText().toString());
-                myViewModel.setRoute_active(true);
+                String id = UUID.randomUUID().toString();
+                myViewModel.generateNewRoute(id, title.getText().toString());
+                Log.d("Creating route", id);
+                Intent intent = new Intent(getContext(), MapsActivity.class);
+                intent.putExtra("current_route", id);
+                startActivity(intent);
+//                myViewModel.setRoute_active(true);
 //                myViewModel.toggle();
 //                startActivity(new Intent(MyView.this, MapsActivity.class));
             }

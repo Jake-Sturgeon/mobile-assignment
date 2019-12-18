@@ -19,9 +19,9 @@ import java.util.ListIterator;
 
 @Entity()
 public class Route {
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     @androidx.annotation.NonNull
-    private int routeId = 0;
+    private String routeId;
     @androidx.annotation.NonNull
     private String title;
 
@@ -37,16 +37,17 @@ public class Route {
     @androidx.annotation.NonNull
     private long startDate;
 
-    public Route(String title, long startDate) {
+    public Route(String routeId, String title, long startDate) {
+        this.routeId = routeId;
         this.startDate = startDate;
         this.title = title;
     }
 
     @androidx.annotation.NonNull
-    public int getRouteId() {
+    public String getRouteId() {
         return routeId;
     }
-    public void setRouteId(@androidx.annotation.NonNull int id) {
+    public void setRouteId(@androidx.annotation.NonNull String id) {
         this.routeId = id;
     }
 
