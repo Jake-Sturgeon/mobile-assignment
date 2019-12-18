@@ -8,4 +8,16 @@
 
     <string name="button_start">Start</string>
     <string name="button_end">End</string>
+
+    <string name="button">Button</string>
+    <string name="menu_item_1">Add</string>
+    <string name="menu_item_2">My Routes</string>
+    <string name="menu_item_3">Settings</string>
+    <string name="create_route_title">New Route</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="new_route_hint">Title...</string>
+    <string name="create_button_text">Begin</string>
+    <string name="menu_item_1_alt">Current Route</string>
+
 </resources>

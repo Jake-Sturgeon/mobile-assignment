@@ -17,6 +17,7 @@ import com.team.macbook.mobileassigment.database.NodeDAO;
 import com.team.macbook.mobileassigment.database.NodeRoomDatabase;
 import com.team.macbook.mobileassigment.database.Route;
 import com.team.macbook.mobileassigment.database.RouteWithNodes;
+import java.util.Calendar;
 
 import java.util.List;
 import java.util.Random;
@@ -51,7 +52,7 @@ class MyRepository extends ViewModel {
     }
 
     public void generateNewRoute(String title) {
-        new insertRoute(mDBDao).execute(new Route(title));
+        new insertRoute(mDBDao).execute(new Route(title, Calendar.getInstance().getTimeInMillis()));
     }
 
     public LiveData<List<RouteWithNodes>> getRoutesWithNodes(){ return mDBDao.getRoutesWithNodes();}
@@ -61,6 +62,8 @@ class MyRepository extends ViewModel {
     }
 
     public LiveData<CompleteRoute> getCompleteRouteFromId(String id){ return mDBDao.getCompleteRouteFromId(id); }
+
+    public LiveData<List<CompleteRoute>> getAllCompleteRoutes(){ return mDBDao.getAllCompleteRoutes(); }
 
 
     private static class insertNode extends AsyncTask<Node, Void, Long> {
