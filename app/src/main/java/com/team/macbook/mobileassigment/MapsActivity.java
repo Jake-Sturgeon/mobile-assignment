@@ -2,6 +2,7 @@ package com.team.macbook.mobileassigment;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.ActivityManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -80,6 +81,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+
         mButtonStart = (Button) findViewById(R.id.button_start);
         mButtonStart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,7 +92,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 mButtonStart.setEnabled(false);
             }
         });
-        mButtonStart.setEnabled(true);
+
 
         mButtonEnd = (Button) findViewById(R.id.button_end);
         mButtonEnd.setOnClickListener(new View.OnClickListener() {
@@ -102,9 +104,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 mButtonEnd.setEnabled(false);
             }
         });
-        mButtonEnd.setEnabled(false);
+
+        if (mFusedLocationClient == null || mFusedLocationClient.getLocationAvailability() != null){
+            mButtonStart.setEnabled(true);
+            mButtonEnd.setEnabled(false);
+        } else {
+            mButtonStart.setEnabled(false);
+            mButtonEnd.setEnabled(true);
+        }
         initLocations();
     }
+
+
 
 
     private void initLocations() {
@@ -134,7 +145,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    private void startLocationUpdates(Context context) {
+    public void startLocationUpdates(Context context) {
         Intent intent = new Intent(context, LocationService.class);
         mLocationPendingIntent = PendingIntent.getService(context, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
@@ -182,9 +193,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mLocationRequest.setFastestInterval(5000);
         mLocationRequest.setSmallestDisplacement(SMALLEST_DISPLACEMENT);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
     }
+
 
 
     private Location mCurrentLocation;
@@ -214,6 +226,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     // contacts-related task you need to do.
                     mFusedLocationClient.requestLocationUpdates(mLocationRequest,
                             mLocationCallback, null /* Looper */);
+//                    startLocationUpdates(getApplicationContext());
                 } else {
 
                     // permission denied, boo! Disable the
