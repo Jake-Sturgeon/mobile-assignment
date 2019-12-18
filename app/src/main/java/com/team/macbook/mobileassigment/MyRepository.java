@@ -21,7 +21,6 @@ import com.team.macbook.mobileassigment.database.RouteWithNodes;
 import java.util.Calendar;
 
 import java.util.List;
-import java.util.Random;
 
 
 class MyRepository extends ViewModel {
@@ -48,16 +47,17 @@ class MyRepository extends ViewModel {
     /**
      * called by the UI to request the generation of a new random number
      */
-    public void generateNewNode(int id, double lat, double longi) {
-        new insertNode(mDBDao).execute(new Node(id, 0, lat, longi));
+    public void generateNewNode(String id, double lat, double longi, String pic) {
+        new insertNode(mDBDao).execute(new Node(id, pic, lat, longi));
     }
 
-    public void generateNewEdge(int id, double lat, double longi) {
+    public void generateNewEdge(String id, double lat, double longi) {
+        Log.d("Edge-Create", id);
         new insertEdge(mDBDao).execute(new Edge(id, 0, lat, longi));
     }
 
-    public void generateNewRoute(String title) {
-        new insertRoute(mDBDao).execute(new Route(title, Calendar.getInstance().getTimeInMillis()));
+    public void generateNewRoute(String id, String title) {
+        new insertRoute(mDBDao).execute(new Route(id, title, Calendar.getInstance().getTimeInMillis()));
     }
 
     public LiveData<List<RouteWithNodes>> getRoutesWithNodes(){ return mDBDao.getRoutesWithNodes();}
@@ -99,30 +99,29 @@ class MyRepository extends ViewModel {
 
 
             return mAsyncTaskDao.insert(params[0]);
+
         }
 
         @Override
         protected void onPostExecute(Long id){
-            Log.i("MyRepository", "Edge id generated: "+id+"");
+            Log.i("MyRepository", "Node id generated: "+id+"");
         }
+
     }
 
-    private static class insertRoute extends AsyncTask<Route, Void, Long> {
+    private static class insertRoute extends AsyncTask<Route, Void, Void> {
         private NodeDAO mAsyncTaskDao;
         insertRoute(NodeDAO dao) {
             mAsyncTaskDao = dao;
         }
-        @Override
-        protected Long doInBackground(final Route... params) {
-            Long id = mAsyncTaskDao.insertRoute(params[0]);
-
-            return id;
-        }
 
         @Override
-        protected void onPostExecute(Long id) {
-            Log.i("MyRepository", "route id generated: "+id+"");
+        protected Void doInBackground(final Route... params) {
+            mAsyncTaskDao.insertRoute(params[0]);
+            return null;
         }
+
+
     }
 
 //    private static class getRoute extends AsyncTask<String, Void, Route> {

@@ -18,7 +18,7 @@ public class Edge {
     @NonNull
     private int edgeId = 0;
     @NonNull
-    public int route_id = 0;
+    public String route_id = "";
     @NonNull
     public int order = 0;
     @NonNull
@@ -26,7 +26,7 @@ public class Edge {
     @NonNull
     public double longitude = 0.0;
 
-    public Edge(int route_id, int order, double longitude, double latitude) {
+    public Edge(String route_id, int order, double longitude, double latitude) {
         this.route_id = route_id;
         this.order = order;
         this.longitude = longitude;
@@ -66,10 +66,10 @@ public class Edge {
     }
 
     @NonNull
-    public int getroute_id() {
+    public String getroute_id() {
         return route_id;
     }
-    public void setroute_id(@NonNull int id) {
+    public void setroute_id(@NonNull String id) {
         this.route_id = id;
     }
 
