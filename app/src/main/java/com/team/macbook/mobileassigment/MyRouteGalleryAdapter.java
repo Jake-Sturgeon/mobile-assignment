@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.team.macbook.mobileassigment.database.CompleteRoute;
+import com.team.macbook.mobileassigment.database.Node;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -62,21 +63,21 @@ public class MyRouteGalleryAdapter extends RecyclerView.Adapter<MyRouteGalleryAd
             holder.preview.setText(String.valueOf(new Date(items.get(position).route.getStartDate())));
 
 
-            mAdapter = new MyGalleryAdapter(new ArrayList<CompleteRoute>(), myViewModel);
+            mAdapter = new MyGalleryAdapter(new ArrayList<Node>(), myViewModel);
             int numberOfColumns = 4;
             holder.images_gallery.setLayoutManager(new GridLayoutManager(context, numberOfColumns));
 
             holder.images_gallery.setAdapter(mAdapter);
 
-            myViewModel.getAllCompleteRoutes().observe(activity , new Observer<List<CompleteRoute>>(){
-                @Override
-                public void onChanged(@Nullable final List<CompleteRoute> newValue) {
-                    if (newValue != null) {
-                        Log.d("HomeFrag", "Setting Items len "+newValue.size()+"");
-                        mAdapter.setItems(newValue);
-
-                    }
-                }});
+//            myViewModel.getAllCompleteRoutes().observe(activity , new Observer<List<CompleteRoute>>(){
+//                @Override
+//                public void onChanged(@Nullable final List<CompleteRoute> newValue) {
+//                    if (newValue != null) {
+//                        Log.d("HomeFrag", "Setting Items len "+newValue.size()+"");
+//                        mAdapter.setItems(newValue);
+//
+//                    }
+//                }});
 
 
             //holder.imageView.setImageResource(R.drawable.joe1);

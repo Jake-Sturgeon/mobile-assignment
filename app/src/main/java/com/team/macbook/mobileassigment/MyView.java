@@ -30,6 +30,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.team.macbook.mobileassigment.database.CompleteRoute;
+import com.team.macbook.mobileassigment.database.Node;
 
 import java.util.List;
 
@@ -166,9 +167,9 @@ public class MyView extends AppCompatActivity {
                 }
             }
         });
-        myViewModel.getViewItemSingle().observe(this, new Observer<CompleteRoute>(){
+        myViewModel.getViewItemSingle().observe(this, new Observer<Node>(){
             @Override
-            public void onChanged(@Nullable final CompleteRoute element) {
+            public void onChanged(@Nullable final Node element) {
                 if (element != null) {
                     if (single_image_frag == null){
                         single_image_frag = new SingleImageFragment();

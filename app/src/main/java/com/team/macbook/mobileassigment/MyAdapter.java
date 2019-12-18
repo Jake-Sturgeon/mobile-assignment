@@ -2,12 +2,15 @@ package com.team.macbook.mobileassigment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.core.app.NotificationCompatSideChannelService;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
@@ -53,7 +56,14 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.View_Holder> {
         if (holder!=null && items.get(position)!=null) {
             holder.title.setText(items.get(position).route.getTitle());
             holder.preview.setText(String.valueOf(new Date(items.get(position).route.getStartDate())));
-            holder.imageView.setImageResource(R.drawable.joe1);
+
+            if (items.get(position).nodes.size() == 0) {
+                holder.imageView.setImageResource(R.drawable.joe1);
+            } else {
+                Bitmap myBitmap = BitmapFactory.decodeFile(items.get(position).nodes.get(0).getPicture_id());
+                holder.imageView.setImageBitmap(myBitmap);
+            }
+
         }
         //animate(holder);
     }

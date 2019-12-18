@@ -16,8 +16,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.team.macbook.mobileassigment.database.CompleteRoute;
+import com.team.macbook.mobileassigment.database.Node;
+import com.team.macbook.mobileassigment.database.Route;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -45,7 +48,7 @@ public class GalleryFragment extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_gallery, container, false);
         myViewModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
-        mAdapter = new MyGalleryAdapter(new ArrayList<CompleteRoute>(), myViewModel);
+        mAdapter = new MyGalleryAdapter(new ArrayList<Node>(), myViewModel);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.my_list);
         // set up the RecyclerView
         int numberOfColumns = 4;
@@ -58,7 +61,15 @@ public class GalleryFragment extends Fragment {
             public void onChanged(@Nullable final List<CompleteRoute> newValue) {
                 if (newValue != null) {
                     Log.d("HomeFrag", "Setting Items len "+newValue.size()+"");
-                    mAdapter.setItems(newValue);
+                    HashMap<String, CompleteRoute> map = new HashMap<>();
+                    List<Node> nodes = new ArrayList<>();
+                    for (CompleteRoute cr: newValue){
+                        map.put(cr.route.getRouteId(), cr);
+                        for (Node node: cr.nodes){
+                            nodes.add(node);
+                        }
+                    }
+                    mAdapter.setItems(nodes);
 
                 }
             }});
