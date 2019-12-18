@@ -44,9 +44,12 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.List;
 
+import pl.aprilapps.easyphotopicker.DefaultCallback;
 import pl.aprilapps.easyphotopicker.EasyImage;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -56,14 +59,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final int ACCESS_FINE_LOCATION = 123;
     private LocationRequest mLocationRequest;
     private FusedLocationProviderClient mFusedLocationClient;
-    private MapView mapView;
-    private Button mButtonStart;
-    private Button mButtonEnd;
     private PendingIntent mLocationPendingIntent;
     private static final float SMALLEST_DISPLACEMENT = 0.5F;
-
-
     private MyMapModel myMapModel;
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        EasyImage.handleActivityResult(requestCode, resultCode, data, this,
+                new DefaultCallback() {
+                    @Override
+                    public void onImagesPicked(List<File> imageFiles, EasyImage.ImageSource source,
+                                               int type) {
+                        Log.d("Images", "Image picked: "+imageFiles.get(0).toString());
+                    }
+                });
+    }
+
 
     public static AppCompatActivity getActivity() {
         return activity;
