@@ -20,6 +20,7 @@
         android:id="@+id/action_settings3"
         android:orderInCategory="100"
         android:title="@string/menu_item_3"
-        android:icon="@android:drawable/ic_menu_preferences"
+        android:icon="@android:drawable/ic_menu_gallery"
+        android:onClick="switchViewGallery"
         app:showAsAction="never" />
 </menu>

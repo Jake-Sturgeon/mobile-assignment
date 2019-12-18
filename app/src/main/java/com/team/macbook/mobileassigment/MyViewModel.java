@@ -36,6 +36,7 @@ public class MyViewModel extends AndroidViewModel {
     private boolean started = false;
     private MutableLiveData<String> text;
     private MutableLiveData<CompleteRoute> cr = new MutableLiveData<>();
+    private MutableLiveData<CompleteRoute> currentViewed = new MutableLiveData<>();
     private LiveData<List<CompleteRoute>> a_cr;
 
     private MutableLiveData<Boolean> route_active = new MutableLiveData<Boolean>(false);
@@ -150,6 +151,17 @@ public class MyViewModel extends AndroidViewModel {
             a_cr = new MutableLiveData<List<CompleteRoute>>();
         }
         return a_cr;
+    }
+
+    public LiveData<CompleteRoute> getViewItemSingle() {
+        if (currentViewed == null) {
+            currentViewed = new MutableLiveData<CompleteRoute>();
+        }
+        return currentViewed;
+    }
+
+    public void setViewItemSingle(CompleteRoute route) {
+        currentViewed.postValue(route);
     }
 
 }

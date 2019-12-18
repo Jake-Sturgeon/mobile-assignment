@@ -29,6 +29,7 @@ import android.R.drawable;
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.team.macbook.mobileassigment.database.CompleteRoute;
 
 import java.util.List;
 
@@ -40,6 +41,8 @@ public class MyView extends AppCompatActivity {
     private DBFragment db_frag;
     private CurrentFragment current_frag;
     private HomeFragment home_frag;
+    private GalleryFragment gallery_frag;
+    private SingleImageFragment single_image_frag;
 
 
 
@@ -69,6 +72,29 @@ public class MyView extends AppCompatActivity {
         transaction.commit();
     }
 
+    public void switchViewGallery(MenuItem item){
+        if (gallery_frag == null){
+            gallery_frag = new GalleryFragment();
+        }
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+// Replace whatever is in the fragment_container view with this fragment,
+// and add the transaction to the back stack
+        transaction.replace(R.id.fragment_container, gallery_frag);
+        transaction.commit();
+    }
+
+    public void switchViewSingleImage(MenuItem item){
+        if (single_image_frag == null){
+            single_image_frag = new SingleImageFragment();
+        }
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+// Replace whatever is in the fragment_container view with this fragment,
+// and add the transaction to the back stack
+        transaction.replace(R.id.fragment_container, single_image_frag);
+        transaction.commit();
+    }
 
 
 
@@ -123,22 +149,12 @@ public class MyView extends AppCompatActivity {
                 Log.d("MyView", "ACTIVE");
                 if (newValue) {
                     Log.d("Route Tracking", "Active");
-                    FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.new_fab);
-                    fab.setImageResource(drawable.ic_menu_camera);
-                    MenuItem i = ((BottomNavigationView)findViewById(R.id.bottom_navigation)).getMenu().getItem(0);
-                    i.setIcon(drawable.ic_menu_compass);
-                    i.setTitle(R.string.menu_item_1_alt);
 
                     Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
                     startActivity(intent);
 
                 } else {
                     Log.d("Route Tracking", "Inactive");
-                    FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.new_fab);
-                    fab.setImageResource(drawable.ic_input_add);
-                    MenuItem i = ((BottomNavigationView)findViewById(R.id.bottom_navigation)).getMenu().getItem(0);
-                    i.setIcon(drawable.ic_menu_add);
-                    i.setTitle(R.string.menu_item_1);
                     if (home_frag == null){
                         home_frag = new HomeFragment();
                     }
@@ -146,22 +162,22 @@ public class MyView extends AppCompatActivity {
                     FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                     transaction.replace(R.id.fragment_container, home_frag);
                     transaction.commit();
-                    fab.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            if (db_frag == null){
-                                db_frag = new DBFragment();
-                            }
 
-                            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                            transaction.replace(R.id.fragment_container, db_frag);
-                            transaction.commit();
-                        }
-                    });
                 }
             }
         });
-
+        myViewModel.getViewItemSingle().observe(this, new Observer<CompleteRoute>(){
+            @Override
+            public void onChanged(@Nullable final CompleteRoute element) {
+                if (element != null) {
+                    if (single_image_frag == null){
+                        single_image_frag = new SingleImageFragment();
+                    }
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.fragment_container, single_image_frag);
+                    transaction.commit();
+                }
+            }});
     }
 
     @Override
