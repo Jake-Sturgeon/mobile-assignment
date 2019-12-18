@@ -37,13 +37,14 @@ public class MyMapModel extends AndroidViewModel {
     public void generateNewNode(int currentRoute, double lat, double lon) {
         mRepository.generateNewNode(1, lat, lon);
     }
+
     public void generateNewEdge(int currentRoute ,double lat, double lon) {
         mRepository.generateNewEdge(1, lat, lon);
     }
 
-    public MutableLiveData<CompleteRoute> getCR() {
+    public LiveData<CompleteRoute> getCRID(String id) {
         if (cr == null) {
-            cr = new MutableLiveData<CompleteRoute>();
+            cr =  new MutableLiveData<CompleteRoute>();
         }
         return cr;
     }
