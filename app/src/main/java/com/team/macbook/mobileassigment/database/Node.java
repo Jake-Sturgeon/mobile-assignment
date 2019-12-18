@@ -17,12 +17,33 @@ public class Node {
     private String picture_id = "";
     private double latitude = 0.0;
     private double longitude = 0.0;
+    private float temp;
+    private float bar;
 
-    public Node(String route_id, String picture_id, double latitude, double longitude) {
+
+    public Node(String route_id, String picture_id, double latitude, double longitude, float temp, float bar) {
         this.route_id = route_id;
         this.picture_id = picture_id;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.temp = temp;
+        this.bar = bar;
+    }
+
+    public float getTemp() {
+        return temp;
+    }
+
+    public void setTemp(float temp) {
+        this.temp = temp;
+    }
+
+    public float getBar() {
+        return bar;
+    }
+
+    public void setBar(float bar) {
+        this.bar = bar;
     }
 
     @androidx.annotation.NonNull

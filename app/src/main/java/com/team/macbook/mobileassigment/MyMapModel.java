@@ -35,8 +35,8 @@ public class MyMapModel extends AndroidViewModel {
 
     }
 
-    public void generateNewNode(String currentRoute, double lat, double lon, String picture) {
-        mRepository.generateNewNode(currentRoute, lat, lon, picture);
+    public void generateNewNode(String currentRoute, double lat, double lon, String picture, float temp, float bar) {
+        mRepository.generateNewNode(currentRoute, lat, lon, picture, temp, bar);
     }
 
     public void generateNewEdge(String currentRoute ,double lat, double lon) {
