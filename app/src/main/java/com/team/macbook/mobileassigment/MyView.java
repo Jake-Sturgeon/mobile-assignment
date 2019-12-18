@@ -27,6 +27,7 @@ import android.R.drawable;
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.team.macbook.mobileassigment.database.CompleteRoute;
 
 import java.util.List;
 
@@ -36,6 +37,8 @@ public class MyView extends AppCompatActivity {
     private DBFragment db_frag;
     private CurrentFragment current_frag;
     private HomeFragment home_frag;
+    private GalleryFragment gallery_frag;
+    private SingleImageFragment single_image_frag;
 
 
     public void switchViewDB(MenuItem item){
@@ -63,6 +66,29 @@ public class MyView extends AppCompatActivity {
         transaction.commit();
     }
 
+    public void switchViewGallery(MenuItem item){
+        if (gallery_frag == null){
+            gallery_frag = new GalleryFragment();
+        }
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+// Replace whatever is in the fragment_container view with this fragment,
+// and add the transaction to the back stack
+        transaction.replace(R.id.fragment_container, gallery_frag);
+        transaction.commit();
+    }
+
+    public void switchViewSingleImage(MenuItem item){
+        if (single_image_frag == null){
+            single_image_frag = new SingleImageFragment();
+        }
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+// Replace whatever is in the fragment_container view with this fragment,
+// and add the transaction to the back stack
+        transaction.replace(R.id.fragment_container, single_image_frag);
+        transaction.commit();
+    }
 
 
 
@@ -137,6 +163,20 @@ public class MyView extends AppCompatActivity {
                 }
             }
         });
+
+        myViewModel.getViewItemSingle().observe(this, new Observer<CompleteRoute>(){
+            @Override
+            public void onChanged(@Nullable final CompleteRoute element) {
+                if (element != null) {
+                    if (single_image_frag == null){
+                        single_image_frag = new SingleImageFragment();
+                    }
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.fragment_container, single_image_frag);
+                    transaction.commit();
+                }
+            }});
+
     }
 
     @Override
