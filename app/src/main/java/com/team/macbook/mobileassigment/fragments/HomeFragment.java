@@ -1,4 +1,4 @@
-package com.team.macbook.mobileassigment;
+package com.team.macbook.mobileassigment.fragments;
 
 
 import android.os.Bundle;
@@ -14,8 +14,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
+import com.team.macbook.mobileassigment.adapters.MyAdapter;
+import com.team.macbook.mobileassigment.models.MyViewModel;
+import com.team.macbook.mobileassigment.R;
 import com.team.macbook.mobileassigment.database.CompleteRoute;
 
 import java.util.ArrayList;

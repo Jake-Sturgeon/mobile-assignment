@@ -1,4 +1,4 @@
-package com.team.macbook.mobileassigment;
+package com.team.macbook.mobileassigment.fragments;
 
 
 import android.os.Bundle;
@@ -12,12 +12,13 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.team.macbook.mobileassigment.adapters.MyGalleryAdapter;
+import com.team.macbook.mobileassigment.models.MyViewModel;
+import com.team.macbook.mobileassigment.R;
 import com.team.macbook.mobileassigment.database.CompleteRoute;
 import com.team.macbook.mobileassigment.database.Node;
-import com.team.macbook.mobileassigment.database.Route;
 
 import java.util.ArrayList;
 import java.util.HashMap;

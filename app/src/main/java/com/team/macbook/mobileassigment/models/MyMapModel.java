@@ -1,4 +1,4 @@
-package com.team.macbook.mobileassigment;
+package com.team.macbook.mobileassigment.models;
 
 import android.app.Application;
 

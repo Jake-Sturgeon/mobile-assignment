@@ -1,14 +1,12 @@
-package com.team.macbook.mobileassigment;
+package com.team.macbook.mobileassigment.fragments;
 
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +19,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -33,8 +30,10 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.team.macbook.mobileassigment.adapters.MyAdapter;
+import com.team.macbook.mobileassigment.models.MyViewModel;
+import com.team.macbook.mobileassigment.R;
 import com.team.macbook.mobileassigment.database.CompleteRoute;
 import com.team.macbook.mobileassigment.database.Edge;
 import com.team.macbook.mobileassigment.database.Node;
@@ -43,7 +42,6 @@ import com.team.macbook.mobileassigment.database.Route;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 

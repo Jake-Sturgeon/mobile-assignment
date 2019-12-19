@@ -1,25 +1,20 @@
-package com.team.macbook.mobileassigment;
+package com.team.macbook.mobileassigment.adapters;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
-import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.team.macbook.mobileassigment.database.CompleteRoute;
+import com.team.macbook.mobileassigment.models.MyViewModel;
+import com.team.macbook.mobileassigment.R;
 import com.team.macbook.mobileassigment.database.Node;
-import com.team.macbook.mobileassigment.database.Route;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 

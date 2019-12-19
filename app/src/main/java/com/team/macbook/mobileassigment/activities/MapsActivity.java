@@ -1,9 +1,7 @@
-package com.team.macbook.mobileassigment;
+package com.team.macbook.mobileassigment.activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.ActivityManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -13,71 +11,54 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
-import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
-import android.util.AttributeSet;
 import android.util.Log;
-import android.view.ActionProvider;
-import android.view.ContextMenu;
 import android.view.MenuItem;
-import android.view.SubMenu;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentTransaction;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.team.macbook.mobileassigment.R;
 import com.team.macbook.mobileassigment.database.CompleteRoute;
 import com.team.macbook.mobileassigment.database.Edge;
 import com.team.macbook.mobileassigment.database.Node;
 import com.team.macbook.mobileassigment.database.Route;
+import com.team.macbook.mobileassigment.models.MyMapModel;
+import com.team.macbook.mobileassigment.sensors.Barometer;
+import com.team.macbook.mobileassigment.sensors.Thermometer;
+import com.team.macbook.mobileassigment.services.ForegroundService;
+import com.team.macbook.mobileassigment.services.LocationService;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -100,7 +81,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private Thermometer temp;
     private Barometer bar;
-    private Accelerometer acc;
+
     private ForegroundService mService = null;
 
 
@@ -279,7 +260,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void disableUpdates(MenuItem i) {
-        acc.stopAccelerometer();
+
         bar.stopBarometer();
         temp.stopThermometer();
         Intent serviceIntent = new Intent(this, ForegroundService.class);
@@ -296,7 +277,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void disableUpdates() {
-        acc.stopAccelerometer();
+
         bar.stopBarometer();
         temp.stopThermometer();
         Intent serviceIntent = new Intent(this, ForegroundService.class);
@@ -346,7 +327,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         bar = new Barometer(getApplicationContext());
 
-        acc = new Accelerometer(getApplicationContext(), bar);
+
 
 
         initLocations();

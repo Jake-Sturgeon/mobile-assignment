@@ -2,19 +2,15 @@
  * Copyright (c) 2019. This code has been developed by Fabio Ciravegna, The University of Sheffield. All rights reserved. No part of this code can be used without the explicit written permission by the author
  */
 
-package com.team.macbook.mobileassigment;
+package com.team.macbook.mobileassigment.sensors;
 
-import android.app.IntentService;
 import android.content.Context;
-import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.SystemClock;
 import android.util.Log;
-
-import androidx.annotation.Nullable;
 
 
 public class Thermometer {

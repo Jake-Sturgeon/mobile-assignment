@@ -2,10 +2,9 @@
  * Copyright (c) 2018. This code has been developed by Fabio Ciravegna, The University of Sheffield. All rights reserved. No part of this code can be used without the explicit written permission by the author
  */
 
-package com.team.macbook.mobileassigment;
+package com.team.macbook.mobileassigment.models;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.lifecycle.AndroidViewModel;
@@ -14,13 +13,15 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
+import com.team.macbook.mobileassigment.R;
 import com.team.macbook.mobileassigment.database.CompleteRoute;
 import com.team.macbook.mobileassigment.database.Node;
 import com.team.macbook.mobileassigment.database.Route;
 import com.team.macbook.mobileassigment.database.RouteWithNodes;
+import com.team.macbook.mobileassigment.sensors.Barometer;
+import com.team.macbook.mobileassigment.sensors.Thermometer;
 
 import java.util.List;
-import java.util.Observable;
 
 
 public class MyViewModel extends AndroidViewModel {
@@ -31,7 +32,7 @@ public class MyViewModel extends AndroidViewModel {
 
     LiveData<Route> route;
     private Barometer barometer;
-    private Accelerometer accelerometer;
+
     private Thermometer thermometer;
     private boolean started = false;
     private MutableLiveData<String> text;
@@ -52,7 +53,6 @@ public class MyViewModel extends AndroidViewModel {
         route = mRepository.getRouteFromId("1");
         rwN_list = mRepository.getRoutesWithNodes();
         barometer= new Barometer(application);
-        accelerometer = new Accelerometer(application, barometer);
         thermometer = new Thermometer(application);
         a_cr = mRepository.getAllCompleteRoutes();
 
@@ -74,21 +74,6 @@ public class MyViewModel extends AndroidViewModel {
         return text;
     }
 
-    public void toggle(){
-        if (started){
-            pauseThermometer();
-            pauseAccelerometer();
-            pauseBarometer();
-            started = false;
-            text.setValue(getApplication().getString(R.string.stopped));
-        } else {
-            startThermometer();
-            startAccelerometer();
-            startBarometer();
-            started = true;
-            text.setValue(getApplication().getString(R.string.started));
-        }
-    }
 
     /**
      * getter for the live data
@@ -99,31 +84,6 @@ public class MyViewModel extends AndroidViewModel {
     public void generateNewRoute(String id, String title) {
 
         mRepository.generateNewRoute(id, title);
-    }
-
-
-    public void pauseBarometer(){
-        barometer.stopBarometer();
-    }
-
-    public void startBarometer(){
-        barometer.startSensingPressure();
-    }
-
-    public void pauseAccelerometer(){
-        accelerometer.stopAccelerometer();
-    }
-
-    public void startThermometer(){
-        thermometer.startThermometerRecording();
-    }
-
-    public void pauseThermometer(){
-        thermometer.stopThermometer();
-    }
-
-    public void startAccelerometer(){
-        accelerometer.startAccelerometerRecording();
     }
 
 
