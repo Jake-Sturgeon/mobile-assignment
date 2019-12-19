@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+ ~ Copyright (c) 2017. This code has been developed by Fabio Ciravegna, The University of Sheffield. All rights
+reserved. No part of this code can be used without the explicit written permission by the author
+ -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/single_image_title"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/preview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:text="@string/single_image_date"
+        android:textSize="16sp" />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/route_pictures"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="vertical"/>
+
+</LinearLayout>

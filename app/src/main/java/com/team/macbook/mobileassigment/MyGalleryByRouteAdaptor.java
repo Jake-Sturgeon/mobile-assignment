@@ -47,7 +47,7 @@ public class MyGalleryByRouteAdaptor extends RecyclerView.Adapter<MyGalleryByRou
     @Override
     public View_Holder onCreateViewHolder(ViewGroup parent, int viewType) {
         //Inflate the layout, initialize the View Holder
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_single_route,
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_route_gallery,
                 parent, false);
         View_Holder holder = new View_Holder(v);
 

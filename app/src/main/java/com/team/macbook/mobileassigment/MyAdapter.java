@@ -63,20 +63,22 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.View_Holder> {
             holder.preview.setText(String.valueOf(new Date(items.get(position).route.getStartDate())));
 
             if (items.get(position).nodes.size() == 0) {
-                holder.imageView.setImageResource(R.drawable.joe1);
+                holder.imageView.setVisibility(View.GONE);
             } else {
                 Bitmap myBitmap = BitmapFactory.decodeFile(items.get(position).nodes.get(0).getPicture_id());
                 holder.imageView.setImageBitmap(myBitmap);
+
+                holder.imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        myViewModel.setViewRouteSingle(items.get(position));
+
+                    }
+                });
             }
 
-            holder.imageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
 
-                    myViewModel.setViewRouteSingle(items.get(position));
-
-                }
-            });
 
             holder.title.setOnClickListener(new View.OnClickListener() {
                 @Override
