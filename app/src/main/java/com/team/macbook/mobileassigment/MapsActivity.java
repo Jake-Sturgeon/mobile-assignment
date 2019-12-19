@@ -2,6 +2,7 @@ package com.team.macbook.mobileassigment;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -36,6 +37,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -58,7 +60,7 @@ import java.util.List;
 import pl.aprilapps.easyphotopicker.DefaultCallback;
 import pl.aprilapps.easyphotopicker.EasyImage;
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.InfoWindowAdapter {
 
     private static AppCompatActivity activity;
     private static GoogleMap mMap;
@@ -144,7 +146,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void takePhoto(MenuItem i) {
-        EasyImage.openCamera(this, 0);
+
+        // To see if the camera is enabled
+        try {
+            EasyImage.openCamera(this, 0);
+        } catch (Exception e) {
+            Toast.makeText(getApplicationContext(), "No Camera Found", Toast.LENGTH_LONG).show();
+//            EasyImage.openGallery(this, 0);
+        }
+
     }
 
     public void enableUpdates(MenuItem i) {
@@ -161,6 +171,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void disableUpdates(MenuItem i) {
+        acc.stopAccelerometer();
+        bar.stopBarometer();
+        temp.stopThermometer();
         stopLocationUpdates();
         i.setIcon(android.R.drawable.ic_menu_compass);
         i.setTitle(R.string.map_menu_1);
@@ -240,7 +253,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                     for (Node node : newValue.nodes) {
                         LatLng point = new LatLng(node.getLatitude(), node.getLongitude());
-                        mMap.addMarker(new MarkerOptions().position(point).snippet("Temp: " + node.getTemp() + "\nPressure: " + node.getBar()));
+                        Marker marker = mMap.addMarker(new MarkerOptions().title("FUCK OFF").position(point).snippet("Temp: " + node.getTemp() + "\nPressure: " + node.getBar()));
+
                     }
                     line = mMap.addPolyline(options);
                     if (options.getPoints().size() > 0) {
@@ -326,8 +340,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onResume() {
         super.onResume();
 
-        acc.startAccelerometerRecording();
-        bar.startSensingPressure(acc);
+
+        bar.startSensingPressure();
         temp.startThermometerRecording();
 
         mLocationRequest = new LocationRequest();
@@ -355,10 +369,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onPause() {
         super.onPause();
-        acc.stopAccelerometer();
-        bar.stopBarometer();
-        temp.stopThermometer();
     }
+
 
     @SuppressLint("MissingPermission")
     @Override
@@ -401,7 +413,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.setInfoWindowAdapter(this);
     }
 
 
+    @Override
+    public View getInfoWindow(Marker marker) {
+        return null;
+    }
+
+    @Override
+    public View getInfoContents(Marker marker) {
+        View view = (getActivity()).getLayoutInflater()
+                .inflate(R.layout.activity_main, null);
+        return view;
+    }
 }

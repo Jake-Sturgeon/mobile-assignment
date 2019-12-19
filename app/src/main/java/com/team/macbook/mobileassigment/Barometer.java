@@ -26,11 +26,11 @@ public class Barometer {
     private SensorManager mSensorManager;
     private Sensor mBarometerSensor;
     private long timePhoneWasLastRebooted = 0;
-    private long BAROMETER_READING_FREQUENCY= 3000;
+    private long BAROMETER_READING_FREQUENCY = 20000;
     private long lastReportTime = 0;
     private boolean started;
 
-    private float pressureValue;
+    private float pressureValue = 0;
 
 //    private Accelerometer accelerometer;
     /**
@@ -100,9 +100,8 @@ public class Barometer {
 
     /**
      * it starts the pressure monitoring
-     * @param accelerometer
      */
-    public void startSensingPressure(Accelerometer accelerometer) {
+    public void startSensingPressure() {
 //        this.accelerometer= accelerometer;
         // if the sensor is null,then mSensorManager is null and we get a crash
         if (standardPressureSensorAvailable()) {
