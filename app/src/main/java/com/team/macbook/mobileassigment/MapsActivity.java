@@ -144,7 +144,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void takePhoto(MenuItem i) {
-        EasyImage.openCamera(this, 0);
+
+        // To see if the camera is enabled
+        try {
+            EasyImage.openCamera(this, 0);
+        } catch (Exception e) {
+            Toast.makeText(getApplicationContext(), "No Camera Found", Toast.LENGTH_LONG).show();
+//            EasyImage.openGallery(this, 0);
+        }
+
     }
 
     public void enableUpdates(MenuItem i) {
@@ -161,6 +169,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void disableUpdates(MenuItem i) {
+        acc.stopAccelerometer();
+        bar.stopBarometer();
+        temp.stopThermometer();
         stopLocationUpdates();
         i.setIcon(android.R.drawable.ic_menu_compass);
         i.setTitle(R.string.map_menu_1);
@@ -326,8 +337,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onResume() {
         super.onResume();
 
-        acc.startAccelerometerRecording();
-        bar.startSensingPressure(acc);
+
+        bar.startSensingPressure();
         temp.startThermometerRecording();
 
         mLocationRequest = new LocationRequest();
@@ -355,10 +366,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onPause() {
         super.onPause();
-        acc.stopAccelerometer();
-        bar.stopBarometer();
-        temp.stopThermometer();
     }
+
 
     @SuppressLint("MissingPermission")
     @Override

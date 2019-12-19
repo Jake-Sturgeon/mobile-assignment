@@ -105,7 +105,7 @@ public class MyViewModel extends AndroidViewModel {
     }
 
     public void startBarometer(){
-        barometer.startSensingPressure(accelerometer);
+        barometer.startSensingPressure();
     }
 
     public void pauseAccelerometer(){

@@ -2,6 +2,7 @@ package com.team.macbook.mobileassigment;
 
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -32,6 +34,8 @@ public class DBFragment extends Fragment {
     public DBFragment() {
         // Required empty public constructor
     }
+
+
 
 
     @Override
@@ -81,12 +85,17 @@ public class DBFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 EditText title = view.findViewById(R.id.inputTitle);
-                String id = UUID.randomUUID().toString();
-                myViewModel.generateNewRoute(id, title.getText().toString());
-                Log.d("Creating route", id);
-                Intent intent = new Intent(getContext(), MapsActivity.class);
-                intent.putExtra("current_route", id);
-                startActivity(intent);
+                if (!(title.getText().length() > 0)) {
+                    Toast.makeText(getActivity(), "Route Must Have A Title", Toast.LENGTH_LONG).show();
+                } else {
+                    String id = UUID.randomUUID().toString();
+                    Log.i("BEGIN", title.getText().toString());
+                    myViewModel.generateNewRoute(id, title.getText().toString());
+                    Log.d("Creating route", id);
+                    Intent intent = new Intent(getContext(), MapsActivity.class);
+                    intent.putExtra("current_route", id);
+                    startActivity(intent);
+                }
 //                myViewModel.setRoute_active(true);
 //                myViewModel.toggle();
 //                startActivity(new Intent(MyView.this, MapsActivity.class));

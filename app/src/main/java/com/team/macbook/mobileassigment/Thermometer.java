@@ -23,14 +23,14 @@ public class Thermometer {
     private SensorManager mSensorManager;
     private Sensor mThermometerSensor;
     private long timePhoneWasLastRebooted = 0;
-    private long THERMOMETER_READING_FREQUENCY= 3000;
+    private long THERMOMETER_READING_FREQUENCY= 20000;
     private long mSamplingRateNano;
     private long lastReportTime = 0;
     private float lastX = 0;
     private float lastY = 0;
     private float lastZ = 0;
 
-    private float temp;
+    private float temp = 0;
 
     public Thermometer(Context context) {
         // http://androidforums.com/threads/how-to-get-time-of-last-system-boot.548661/
