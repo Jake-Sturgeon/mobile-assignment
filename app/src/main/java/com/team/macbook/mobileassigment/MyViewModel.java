@@ -192,4 +192,9 @@ public class MyViewModel extends AndroidViewModel {
 
     }
 
+    public LiveData<CompleteRoute> getCompleteRouteFromId(String id){
+        return mRepository.getCompleteRouteFromId(id);
+
+    }
+
 }
