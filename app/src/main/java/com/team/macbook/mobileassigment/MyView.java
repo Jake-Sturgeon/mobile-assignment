@@ -47,6 +47,8 @@ public class MyView extends AppCompatActivity {
     private SingleImageFragment single_image_frag;
     private SingleRouteFragment single_route_frag;
     private ViewImageFragment view_image_frag;
+    private GalleryByRouteFragment gallery_by_route_frag;
+
     private Stack<Fragment> previous_frags = new Stack<>();
     private Fragment this_frag;
 
@@ -65,6 +67,22 @@ public class MyView extends AppCompatActivity {
 // and add the transaction to the back stack
         transaction.replace(R.id.fragment_container, db_frag);
         this_frag = db_frag;
+        transaction.commit();
+    }
+
+    public void switchViewRouteGallery(MenuItem item){
+        if (gallery_by_route_frag == null){
+            gallery_by_route_frag = new GalleryByRouteFragment();
+        }
+        previous_frags = new Stack<>();
+        previous_frags.add(home_frag);
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+// Replace whatever is in the fragment_container view with this fragment,
+// and add the transaction to the back stack
+        transaction.replace(R.id.fragment_container, gallery_by_route_frag);
+        this_frag = gallery_by_route_frag;
         transaction.commit();
     }
 

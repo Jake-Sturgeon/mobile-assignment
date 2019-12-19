@@ -55,7 +55,6 @@ public class SingleRouteFragment extends Fragment {
             @Override
             public void onChanged(@Nullable final CompleteRoute element) {
                 if (element != null) {
-                    System.out.println("HELLO JOHN");
                     TextView title = (TextView) view.findViewById(R.id.title);
                     TextView date = (TextView) view.findViewById(R.id.preview);
                     title.setText(element.route.getTitle());
