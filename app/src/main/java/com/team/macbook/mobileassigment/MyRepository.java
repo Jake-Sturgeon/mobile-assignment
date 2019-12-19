@@ -47,12 +47,11 @@ class MyRepository extends ViewModel {
     /**
      * called by the UI to request the generation of a new random number
      */
-    public void generateNewNode(String id, double lat, double longi, String pic, float temp, float bar) {
-        new insertNode(mDBDao).execute(new Node(id, pic, lat, longi, temp, bar));
+    public void generateNewNode(String id, double lat, double longi, String pic, String icon, float temp, float bar) {
+        new insertNode(mDBDao).execute(new Node(id, pic, icon, lat, longi, temp, bar));
     }
 
     public void generateNewEdge(String id, double lat, double longi) {
-        Log.d("Edge-Create", id);
         new insertEdge(mDBDao).execute(new Edge(id, 0, lat, longi));
     }
 
@@ -123,6 +122,8 @@ class MyRepository extends ViewModel {
 
 
     }
+
+
 
 //    private static class getRoute extends AsyncTask<String, Void, Route> {
 //        private NodeDAO mAsyncTaskDao;

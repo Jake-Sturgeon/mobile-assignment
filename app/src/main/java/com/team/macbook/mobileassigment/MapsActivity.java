@@ -8,9 +8,14 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,7 +25,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
@@ -48,13 +57,19 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.team.macbook.mobileassigment.database.CompleteRoute;
 import com.team.macbook.mobileassigment.database.Edge;
 import com.team.macbook.mobileassigment.database.Node;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import pl.aprilapps.easyphotopicker.DefaultCallback;
@@ -65,6 +80,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static AppCompatActivity activity;
     private static GoogleMap mMap;
     private static final int ACCESS_FINE_LOCATION = 123;
+    private static final int CAMERA_REQUEST_CODE = 7500;
+
     private LocationRequest mLocationRequest;
     private FusedLocationProviderClient mFusedLocationClient;
     private PendingIntent mLocationPendingIntent;
@@ -82,6 +99,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private MyMapModel myMapModel;
 
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -91,8 +109,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     @Override
                     public void onImagesPicked(List<File> imageFiles, EasyImage.ImageSource source,
                                                int type) {
-
+                        hidePopup();
                         Log.d("Images", "Image picked: "+imageFiles.get(0).toString());
+
+                        new createIcon().execute(imageFiles.get(0));
+
+                        String apath = imageFiles.get(0).getAbsolutePath();
+
+                        final String newPath = apath.substring(0,apath.length()-2)+"_icon.jpg";
+
                         final String imageS = imageFiles.get(0).toString();
                         mFusedLocationClient.getLastLocation()
                                 .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
@@ -112,7 +137,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 //                                            mMap.addMarker(new MarkerOptions().position(loc)
 //                                                    .title("Sensor Reading").snippet("Temp: " + t + "\nPressure: " + b));
-                                            myMapModel.generateNewNode(currentRoute, location.getLatitude(), location.getLongitude(), imageS, t, b);
+                                            myMapModel.generateNewNode(currentRoute, location.getLatitude(), location.getLongitude(), imageS, newPath, t, b);
                                         }
                                     }
                                 });
@@ -145,15 +170,49 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .setAllowMultiplePickInGallery(true);
     }
 
-    public void takePhoto(MenuItem i) {
 
-        // To see if the camera is enabled
-        try {
+    public void hidePopup(){
+        ConstraintLayout layout = findViewById(R.id.mapsLayout);
+        ConstraintSet constraintSet = new ConstraintSet();
+        constraintSet.clone(layout);
+        constraintSet.connect(R.id.myRectangleView,ConstraintSet.TOP, R.id.mapsLayout,ConstraintSet.BOTTOM,0);
+        constraintSet.connect(R.id.myRectangleView,ConstraintSet.BOTTOM,R.id.mapsLayout,ConstraintSet.BOTTOM,0);
+        constraintSet.applyTo(layout);
+    }
+
+    public void takePhoto() {
+        if (haveCamera()) {
             EasyImage.openCamera(this, 0);
-        } catch (Exception e) {
-            Toast.makeText(getApplicationContext(), "No Camera Found", Toast.LENGTH_LONG).show();
-//            EasyImage.openGallery(this, 0);
+        } else {
+            requestCamera();
         }
+
+
+    }
+
+    public void choosePhoto() {
+
+        EasyImage.openGallery(this, 0);
+
+
+    }
+    private boolean haveCamera() {
+        return (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED);
+    }
+
+    private void requestCamera() {
+        String[] permissions = new String[]{Manifest.permission.CAMERA};
+        ActivityCompat.requestPermissions(MapsActivity.this, permissions, CAMERA_REQUEST_CODE);
+    }
+
+
+    public void openCreateMoment(MenuItem i) {
+        ConstraintLayout layout = findViewById(R.id.mapsLayout);
+        ConstraintSet constraintSet = new ConstraintSet();
+        constraintSet.clone(layout);
+        constraintSet.connect(R.id.myRectangleView,ConstraintSet.BOTTOM,R.id.bottom_navigation,ConstraintSet.TOP,0);
+        constraintSet.connect(R.id.myRectangleView,ConstraintSet.TOP,R.id.mapsLayout,ConstraintSet.TOP,0);
+        constraintSet.applyTo(layout);
 
     }
 
@@ -209,6 +268,22 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        FloatingActionButton fab_photo = (FloatingActionButton) findViewById(R.id.photo);
+        fab_photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                takePhoto();
+            }
+        });
+
+        FloatingActionButton fab_gal = (FloatingActionButton) findViewById(R.id.gallery);
+        fab_gal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                choosePhoto();
+            }
+        });
 
         temp = new Thermometer(getApplicationContext());
 
@@ -393,6 +468,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     // functionality that depends on this permission.
                 }
                 return;
+            }case CAMERA_REQUEST_CODE: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    EasyImage.openCamera(this, 0);
+                } else {
+                    Toast.makeText(getApplicationContext(), "No Camera Found", Toast.LENGTH_LONG).show();
+                }
             }
 
             // other 'case' lines to check for other
@@ -414,6 +495,56 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setInfoWindowAdapter(this);
+    }
+
+    @Override
+    public void onBackPressed() {
+        stopLocationUpdates();
+        finish();
+    }
+
+
+    private static class createIcon extends AsyncTask<File, Void, Void> {
+        createIcon() {
+        }
+        @Override
+        protected Void doInBackground(final File... params) {
+
+            Bitmap myBitmap = BitmapFactory.decodeFile(params[0].toString());
+
+            int width = myBitmap.getWidth();
+            int height = myBitmap.getHeight();
+
+            double scale;
+
+            if (width > height){
+                scale = 200.0/width;
+            } else {
+                scale = 200.0/height;
+            }
+
+            Log.d("Width", ""+width);
+            Log.d("Height", ""+height);
+            Log.d("Width", ""+width*scale);
+            Log.d("Height", ""+height*scale);
+
+            Bitmap icon = Bitmap.createScaledBitmap(myBitmap, (int)(myBitmap.getWidth()*scale), (int)(myBitmap.getHeight()*scale), true);
+
+            String apath = params[0].getAbsolutePath();
+
+            final String newPath = apath.substring(0,apath.length()-2)+"_icon.jpg";
+
+            File file = new File(newPath);
+
+            try{
+                FileOutputStream outputStream = new FileOutputStream(file);
+                icon.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+
+            } catch (FileNotFoundException e){
+                Log.d("1", "No file found");
+            }
+            return null;
+        }
     }
 
 

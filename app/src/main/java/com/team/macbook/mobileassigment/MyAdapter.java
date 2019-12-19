@@ -65,7 +65,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.View_Holder> {
             if (items.get(position).nodes.size() == 0) {
                 holder.imageView.setVisibility(View.GONE);
             } else {
-                Bitmap myBitmap = BitmapFactory.decodeFile(items.get(position).nodes.get(0).getPicture_id());
+                Bitmap myBitmap = BitmapFactory.decodeFile(items.get(position).nodes.get(0).getIcon_id());
                 holder.imageView.setImageBitmap(myBitmap);
 
                 holder.imageView.setOnClickListener(new View.OnClickListener() {

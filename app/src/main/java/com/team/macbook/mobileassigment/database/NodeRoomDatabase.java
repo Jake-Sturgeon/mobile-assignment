@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-@androidx.room.Database(entities = {Node.class, Route.class, Edge.class}, version = 5, exportSchema = false)
+@androidx.room.Database(entities = {Node.class, Route.class, Edge.class}, version = 6, exportSchema = false)
 public abstract class NodeRoomDatabase extends RoomDatabase {
     public abstract NodeDAO myDao();
 
