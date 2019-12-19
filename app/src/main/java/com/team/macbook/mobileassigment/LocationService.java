@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
+import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -41,15 +42,14 @@ public class LocationService extends IntentService {
     private static final String TAG = "INTENTS";
     private Location mCurrentLocation;
     private String mLastUpdateTime;
-    private String currentRoute;
 
     private MyMapModel myMapModel;
 
+
     @Override
     public void onCreate() {
-        myMapModel = ViewModelProviders.of(MapsActivity.getActivity()).get(MyMapModel.class);
-        currentRoute = myMapModel.getCurrentID();
         super.onCreate();
+        myMapModel = ViewModelProviders.of(MapsActivity.getActivity()).get(MyMapModel.class);
     }
 
     public LocationService() {
@@ -69,12 +69,23 @@ public class LocationService extends IntentService {
                 for (Location location : locResults.getLocations()) {
                     if (location == null) continue;
                     //do something with the location
+
+
                     Log.i("New Location", "Current location: " + location);
+                    String currentRoute = myMapModel.retrieveRecentRouteId();
+                    Log.i("New Location", "Current Route: " + currentRoute);
                     mCurrentLocation = location;
                     mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
                     Log.i("MAP", "new location Intent " + mCurrentLocation.toString());
                     Log.i(LocationService.class.getName(),"this is working");
-                    myMapModel.generateNewEdge(currentRoute, mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+
+                    Intent in = new Intent(LocationService.class.getName());
+                    Bundle extras = new Bundle();
+                    extras.putDouble("lat", mCurrentLocation.getLatitude());
+                    extras.putDouble("long", mCurrentLocation.getLongitude());
+                    in.putExtras(extras);
+                    getApplicationContext().sendBroadcast(in);
+                    myMapModel.generateNewEdge(myMapModel.retrieveRecentRouteId(), mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
                 }
             }
 

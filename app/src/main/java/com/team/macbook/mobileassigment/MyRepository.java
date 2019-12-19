@@ -69,6 +69,9 @@ class MyRepository extends ViewModel {
 
     public LiveData<List<CompleteRoute>> getAllCompleteRoutes(){ return mDBDao.getAllCompleteRoutes(); }
 
+    public String retrieveRecentRouteId(){
+        return mDBDao.retrieveRecentRouteId();
+    }
 
     private static class insertNode extends AsyncTask<Node, Void, Long> {
         private NodeDAO mAsyncTaskDao;

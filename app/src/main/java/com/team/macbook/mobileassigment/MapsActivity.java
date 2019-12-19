@@ -5,13 +5,16 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Location;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -30,6 +33,7 @@ import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentTransaction;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
@@ -91,12 +95,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Thermometer temp;
     private Barometer bar;
     private Accelerometer acc;
+    private ForegroundService mService = null;
 
 
     private String currentRoute;
     private Polyline line;
 
     private MyMapModel myMapModel;
+    private BroadcastReceiver receiver;
 
 
 
@@ -119,28 +125,24 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         final String newPath = apath.substring(0,apath.length()-2)+"_icon.jpg";
 
                         final String imageS = imageFiles.get(0).toString();
-                        mFusedLocationClient.getLastLocation()
-                                .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
-                                    @Override
-                                    public void onSuccess(Location location) {
-                                        // Got last known location. In some rare situations this can be null.
-                                        if (location != null) {
-                                            LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
+
+                        // Got last known location. In some rare situations this can be null.
+                        if (lat != 100 && longi != 200) {
+                            LatLng loc = new LatLng(lat, longi);
 
 
-                                            float t = temp.getTemp();
-                                            float b = bar.getPressureValue();
-                                            Log.i("Location", "Image loc: " + loc.toString());
-                                            Log.i("Location", "Temp: " + t);
-                                            Log.i("Location", "Bar: " + b);
+                            float t = temp.getTemp();
+                            float b = bar.getPressureValue();
+                            Log.i("Location", "Image loc: " + loc.toString());
+                            Log.i("Location", "Temp: " + t);
+                            Log.i("Location", "Bar: " + b);
 
 
 //                                            mMap.addMarker(new MarkerOptions().position(loc)
 //                                                    .title("Sensor Reading").snippet("Temp: " + t + "\nPressure: " + b));
-                                            myMapModel.generateNewNode(currentRoute, location.getLatitude(), location.getLongitude(), imageS, newPath, t, b);
-                                        }
-                                    }
-                                });
+                            myMapModel.generateNewNode(currentRoute, lat, longi, imageS, newPath, t, b);
+                        }
+
 
                     }
                 });
@@ -216,8 +218,26 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
+    private double lat = 100;
+    private double longi = 200;
+
     public void enableUpdates(MenuItem i) {
-        startLocationUpdates(getApplicationContext());
+        Intent serviceIntent = new Intent(this, ForegroundService.class);
+        serviceIntent.putExtra("inputExtra", "Mobile Assignment is tracking your location for your current route.");
+        ContextCompat.startForegroundService(this, serviceIntent);
+        receiver = new BroadcastReceiver() {
+            private static final String TAG = "MyBroadcastReceiver";
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Bundle extras = intent.getExtras();
+                lat = intent.getDoubleExtra("lat", lat);
+                longi = intent.getDoubleExtra("long", longi);
+                Log.d("Broadcast Listener", "Updated lat long");
+            }
+        };
+
+        this.registerReceiver(receiver, new IntentFilter(LocationService.class.getName()));
+
         i.setIcon(android.R.drawable.ic_menu_close_clear_cancel);
         i.setTitle(R.string.map_menu_2);
         i.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
@@ -233,7 +253,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         acc.stopAccelerometer();
         bar.stopBarometer();
         temp.stopThermometer();
-        stopLocationUpdates();
+        Intent serviceIntent = new Intent(this, ForegroundService.class);
+        stopService(serviceIntent);
         i.setIcon(android.R.drawable.ic_menu_compass);
         i.setTitle(R.string.map_menu_1);
         i.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
@@ -261,7 +282,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         initEasyImage();
         setContentView(R.layout.activity_maps);
         setActivity(this);
-
 
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -294,16 +314,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         initLocations();
 
-        LiveData<FusedLocationProviderClient> ld = new MutableLiveData<FusedLocationProviderClient>(mFusedLocationClient);
 
-        ld.observe(this, new Observer<FusedLocationProviderClient>() {
-            @Override
-            public void onChanged(@Nullable final FusedLocationProviderClient newValue) {
-                if (newValue != null) {
-                    startLocationUpdates(getApplicationContext());
-                }
-            }
-        });
 
 
 //
@@ -371,36 +382,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    public void startLocationUpdates(Context context) {
-        Intent intent = new Intent(context, LocationService.class);
-        mLocationPendingIntent = PendingIntent.getService(context, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            Task<Void> locationTask = mFusedLocationClient.requestLocationUpdates(mLocationRequest,
-                    mLocationPendingIntent);
-            if (locationTask != null) {
-                locationTask.addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        if (e instanceof ApiException) {
-                            Log.w("MapsActivity", ((ApiException) e).getStatusMessage());
-                        } else {
-                            Log.w("MapsActivity", e.getMessage());
-                        }
-                    }
-                });
 
-                locationTask.addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        Log.d("MapsActivity", "restarting gps successful!");
-                    }
-                });
-
-
-            }
-        }
-    }
 
     /**
      * it stops the location updates
@@ -419,13 +401,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         bar.startSensingPressure();
         temp.startThermometerRecording();
 
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(10000);
-        mLocationRequest.setFastestInterval(5000);
-        mLocationRequest.setSmallestDisplacement(SMALLEST_DISPLACEMENT);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
     }
 
 
