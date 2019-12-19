@@ -152,6 +152,7 @@ public class ForegroundService extends Service {
         Log.i(TAG, "Requesting location updates");
 
         Intent intent = new Intent(this, LocationService.class);
+        intent.putExtra("Route", myMapModel.getCurrentID());
         mLocationPendingIntent = PendingIntent.getService(this, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {

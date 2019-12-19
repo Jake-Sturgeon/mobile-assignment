@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
+import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -46,13 +47,22 @@ public class LocationService extends IntentService {
     private MyMapModel myMapModel;
 
     @Override
+    public int onStartCommand(Intent intent, int flags, int startId){
+        Bundle ex = intent.getExtras();
+        for (String key : ex.keySet()){
+            Log.i("ad", ex.getString(key));
+            currentRoute = ex.getString(key);
+        }
+
+        return START_NOT_STICKY;
+    }
+
+    @Override
     public void onCreate() {
         super.onCreate();
         myMapModel = ViewModelProviders.of(MapsActivity.getActivity()).get(MyMapModel.class);
-        if( myMapModel.getCurrentID() != null )
-            currentRoute = myMapModel.getCurrentID();
-        Log.i("New Location", "Current CREATE: " + currentRoute);
-        Log.i("New Location", "Current CREATE: " + myMapModel);
+
+
 
     }
 
@@ -67,6 +77,8 @@ public class LocationService extends IntentService {
      */
     @Override
     protected void onHandleIntent(Intent intent) {
+        Log.i("New Location", "Current CREATE: " + currentRoute);
+        Log.i("New Location", "Current CREATE: " + myMapModel);
         if (LocationResult.hasResult(intent)) {
             LocationResult locResults = LocationResult.extractResult(intent);
             if (locResults != null) {
