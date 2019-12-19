@@ -67,6 +67,9 @@ import java.util.Map;
 import pl.aprilapps.easyphotopicker.DefaultCallback;
 import pl.aprilapps.easyphotopicker.EasyImage;
 
+/**
+ * Maps activity runs the map activity
+ */
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.InfoWindowAdapter {
 
     private static AppCompatActivity activity;
@@ -74,15 +77,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final int ACCESS_FINE_LOCATION = 123;
     private static final int CAMERA_REQUEST_CODE = 7500;
 
-    private LocationRequest mLocationRequest;
-    private PendingIntent mLocationPendingIntent;
-    private static final float SMALLEST_DISPLACEMENT = 0.5F;
-
-
     private Thermometer temp;
     private Barometer bar;
-
-    private ForegroundService mService = null;
 
 
     private String currentRoute;
@@ -95,8 +91,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Map<Marker, Node> nodesGetter = new HashMap<>();
 
 
-
-
+    /**
+     *
+     * When a moment is taken this function is called.
+     *
+     * This function generates a new node, which contains the sensor readings, locations, and
+     * images
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -128,9 +133,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             Log.i("Location", "Temp: " + t);
                             Log.i("Location", "Bar: " + b);
 
-
-//                                            mMap.addMarker(new MarkerOptions().position(loc)
-//                                                    .title("Sensor Reading").snippet("Temp: " + t + "\nPressure: " + b));
                             myMapModel.generateNewNode(currentRoute, lat, longi, imageS, newPath, t, b);
                         }
 
@@ -140,14 +142,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
+    /**
+     * @return AppCompatActivity activity
+     */
     public static AppCompatActivity getActivity() {
         return activity;
     }
 
+    /**
+     * @param activity
+     */
     public static void setActivity(AppCompatActivity activity) {
         MapsActivity.activity = activity;
     }
 
+    /**
+     * @return GoogleMap mMap
+     */
     public static GoogleMap getMap() {
         return mMap;
     }
@@ -155,15 +166,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void initEasyImage() {
         EasyImage.configuration(this)
                 .setImagesFolderName("EasyImage sample")
-// it adds new pictures to the gallery
+                // it adds new pictures to the gallery
                 .setCopyTakenPhotosToPublicGalleryAppFolder(true)
-// probably unnecessary
                 .setCopyPickedImagesToPublicGalleryAppFolder(false)
-// it allows to select multiple pictures in the gallery
+                // it allows to select multiple pictures in the gallery
                 .setAllowMultiplePickInGallery(true);
     }
 
 
+    /**
+     * Removes take moment popup
+     */
     public void hidePopup(){
         ConstraintLayout layout = findViewById(R.id.mapsLayout);
         ConstraintSet constraintSet = new ConstraintSet();
@@ -173,6 +186,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         constraintSet.applyTo(layout);
     }
 
+    /**
+     * Opens the camera if available otherwise the library
+     */
     public void takePhoto() {
         if (haveCamera()) {
             EasyImage.openCamera(this, 0);
@@ -183,12 +199,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
+    /**
+     * opens the gallery
+     */
     public void choosePhoto() {
-
         EasyImage.openGallery(this, 0);
-
-
     }
+
     private boolean haveCamera() {
         return (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED);
     }
@@ -199,6 +216,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
+    /**
+     * opens the create moment tray
+     *
+     * @param i
+     */
     public void openCreateMoment(MenuItem i) {
         ConstraintLayout layout = findViewById(R.id.mapsLayout);
         ConstraintSet constraintSet = new ConstraintSet();
@@ -212,6 +234,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private double lat = 100;
     private double longi = 200;
 
+    /**
+     * Starts location tracking and changes buttons
+     *
+     * @param i
+     */
     public void enableUpdates(MenuItem i) {
         Intent serviceIntent = new Intent(this, ForegroundService.class);
         serviceIntent.putExtra("inputExtra", "Mobile Assignment is tracking your location for your current route.");
@@ -240,6 +267,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
 
+    /**
+     * Starts location tracking
+     */
     public void enableUpdates() {
         Intent serviceIntent = new Intent(this, ForegroundService.class);
         serviceIntent.putExtra("inputExtra", "Mobile Assignment is tracking your location for your current route.");
@@ -259,6 +289,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         this.registerReceiver(receiver, new IntentFilter(LocationService.class.getName()));
     }
 
+    /**
+     *
+     * Disables tracking and sensors
+     *
+     * @param i
+     */
     public void disableUpdates(MenuItem i) {
 
         bar.stopBarometer();
@@ -276,6 +312,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
 
+    /**
+     * Disables tracking and sensors
+     */
     public void disableUpdates() {
 
         bar.stopBarometer();
@@ -284,6 +323,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         stopService(serviceIntent);
     }
 
+    /**
+     *
+     * Creates all the observers, buttons, sensors, and map listeners
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -327,15 +371,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         bar = new Barometer(getApplicationContext());
 
-
-
-
         initLocations();
 
-
-
-
-//
         myMapModel.getCRID().observe(this, new Observer<CompleteRoute>() {
             @Override
             public void onChanged(@Nullable final CompleteRoute newValue) {
@@ -404,11 +441,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
+    /**
+     * Finishes the activity
+     *
+     * @param i
+     */
     public void finishActivity(MenuItem i){
         disableUpdates();
         finish();
     }
 
+    /**
+     * Resumes activity
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -433,12 +478,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     };
 
+    /**
+     * Pauses activity
+     */
     @Override
     protected void onPause() {
         super.onPause();
     }
 
 
+    /**
+     *
+     * Get permissions from user
+     *
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
     @SuppressLint("MissingPermission")
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -488,6 +544,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.setInfoWindowAdapter(this);
     }
 
+    /**
+     * Save route if back button is pressed
+     */
     @Override
     public void onBackPressed() {
         disableUpdates();
@@ -536,11 +595,26 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
+
+    /**
+     *
+     * Required for Marker popups
+     *
+     * @param marker
+     * @return null
+     */
     @Override
     public View getInfoWindow(Marker marker) {
         return null;
     }
 
+    /**
+     *
+     * Set content for each Marker
+     *
+     * @param marker
+     * @return
+     */
     @Override
     public View getInfoContents(Marker marker) {
         Node element = nodesGetter.get(marker);
@@ -554,9 +628,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         pressTextView.setText(element.getBar()+"");
         TextView tempTextView = (TextView)  view.findViewById(R.id.singleImageTemp);
         tempTextView.setText(element.getTemp()+"");
-//                    if (element.nodes.get(0).getPicture_id() != -1) {
-//
-//                    }
+
         Bitmap myBitmap = BitmapFactory.decodeFile(element.getIcon_id());
         imageView.setImageBitmap(myBitmap);
         myMapModel.getRouteFromId(element.getRoute_id()).observe(getActivity(), new Observer<Route>() {
