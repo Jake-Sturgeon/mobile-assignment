@@ -3,6 +3,7 @@ package com.team.macbook.mobileassigment;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,12 +14,25 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.team.macbook.mobileassigment.database.CompleteRoute;
+import com.team.macbook.mobileassigment.database.Edge;
 import com.team.macbook.mobileassigment.database.Node;
 import com.team.macbook.mobileassigment.database.Route;
 
@@ -30,12 +44,16 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SingleImageFragment extends Fragment {
+public class SingleImageFragment extends Fragment implements OnMapReadyCallback {
     private View view;
     private MyViewModel myViewModel;
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private MyAdapter mAdapter;
+    private MapView mapView;
+    private GoogleMap gmap;
+    private static final String MAP_VIEW_BUNDLE_KEY = "MapViewBundleKey";
+    private LiveData<Node> currentNode = new MutableLiveData<>();
 
 
 
@@ -51,9 +69,17 @@ public class SingleImageFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_single_image, container, false);
         myViewModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
         mAdapter = new MyAdapter(new ArrayList<CompleteRoute>(), myViewModel);
+        Bundle mapViewBundle = null;
+        if (savedInstanceState != null) {
+            mapViewBundle = savedInstanceState.getBundle(MAP_VIEW_BUNDLE_KEY);
+        }
+        mapView = view.findViewById(R.id.map_view);
+        mapView.onCreate(mapViewBundle);
+        mapView.getMapAsync(this);
 
+        currentNode = myViewModel.getViewItemSingle();
 
-        myViewModel.getViewItemSingle().observe(this, new Observer<Node>(){
+        currentNode.observe(this, new Observer<Node>(){
             @Override
             public void onChanged(@Nullable final Node element) {
                 if (element != null) {
@@ -92,6 +118,61 @@ public class SingleImageFragment extends Fragment {
         return view;
 
 
+
+    }
+
+    @Override
+    public void onResume() {
+        mapView.onResume();
+        super.onResume();
+    }
+
+    private void focusCamera(){
+        final Node cn = currentNode.getValue();
+
+        myViewModel.getCompleteRouteFromId(cn.getRoute_id()).observe(getActivity(), new Observer<CompleteRoute>() {
+            @Override
+            public void onChanged(CompleteRoute newValue) {
+                PolylineOptions options = new PolylineOptions().width(5).color(Color.BLUE);
+                for (Edge edge : newValue.edges) {
+                    LatLng point = new LatLng(edge.longitude, edge.latitude);
+                    options.add(point);
+                }
+                for (Node node : newValue.nodes) {
+                    LatLng point = new LatLng(node.getLatitude(), node.getLongitude());
+                    if (node.getId() == cn.getId()){
+                        Marker marker = gmap.addMarker(new MarkerOptions().title(" ").position(point).snippet("Temp: " + node.getTemp() + "\nPressure: " + node.getBar()));
+                    } else {
+                        Marker marker = gmap.addMarker(new MarkerOptions().title(" ").position(point).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)).snippet("Temp: " + node.getTemp() + "\nPressure: " + node.getBar()));
+                    }
+
+
+                }
+                gmap.addPolyline(options);
+                if (options.getPoints().size() > 0) {
+                    gmap.animateCamera(CameraUpdateFactory.newLatLngZoom(options.getPoints().get(options.getPoints().size() - 1), 15.0f));
+                }
+            }
+        });
+
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        gmap = googleMap;
+//        gmap.setMinZoomPreference(12);
+//        LatLng ny = new LatLng(40.7143528, -74.0059731);
+//        gmap.moveCamera(CameraUpdateFactory.newLatLng(ny))
+        if (currentNode.getValue() != null){
+            focusCamera();
+        } else {
+            currentNode.observe(this, new Observer<Node>() {
+                @Override
+                public void onChanged(@Nullable final Node element) {
+                    focusCamera();
+                }
+            });
+        }
 
     }
 
