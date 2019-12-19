@@ -9,7 +9,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/offWhite">
+    android:background="@color/offWhite"
+    android:id="@+id/mapsLayout">
+
+
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:map="http://schemas.android.com/apk/res-auto"
@@ -23,6 +26,66 @@
         app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
         tools:context=".MapsActivity" />
 
+
+    <View
+        android:id="@+id/myRectangleView"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@drawable/rect_popup"
+
+        app:layout_constraintTop_toTopOf="@id/bottom_navigation"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/photo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="80dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:backgroundTint="@color/colorPrimary"
+        app:tint="@color/white"
+        app:layout_constraintTop_toTopOf="@id/myRectangleView"
+        app:layout_constraintLeft_toLeftOf="@id/myRectangleView"
+        app:srcCompat="@android:drawable/ic_menu_camera" />
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/gallery"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="80dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:backgroundTint="@color/colorPrimary"
+        app:tint="@color/white"
+        app:layout_constraintTop_toTopOf="@id/myRectangleView"
+        app:layout_constraintRight_toRightOf="@id/myRectangleView"
+        app:srcCompat="@android:drawable/ic_menu_gallery" />
+
+    <TextView
+        android:id="@+id/photo_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/popup_photo"
+        app:layout_constraintTop_toBottomOf="@id/photo"
+        app:layout_constraintLeft_toLeftOf="@id/photo"
+        app:layout_constraintRight_toRightOf="@id/photo"
+        android:layout_marginTop="5dp"/>
+
+    <TextView
+        android:id="@+id/gallery_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/popup_gallery"
+        app:layout_constraintTop_toBottomOf="@id/gallery"
+        app:layout_constraintLeft_toLeftOf="@id/gallery"
+        app:layout_constraintRight_toRightOf="@id/gallery"
+        android:layout_marginTop="5dp"/>
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
@@ -33,8 +96,6 @@
         app:itemTextColor="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/menu_maps" />
-
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
