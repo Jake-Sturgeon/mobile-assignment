@@ -1,23 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SingleImageFragment"
     android:background="@color/offWhite">
 
-    <ImageView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/image"/>
-
-    <TextView
-        android:id="@+id/singleImageTitle"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
-        android:text="@string/single_image_title"
-        android:textSize="40sp" />
+        android:orientation="vertical">
 
+        <TextView
+            android:id="@+id/singleImageTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="32dp"
+            android:text="@string/single_image_title"
+            app:layout_constraintTop_toTopOf="parent"
+            android:textSize="40sp" />
+
+        <TextView
+            android:id="@+id/singleImageDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="24dp"
+            android:text="@string/single_image_date"
+            app:layout_constraintTop_toTopOf="parent"
+            android:textSize="24sp" />
+
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="411dp"
+            android:layout_height="253dp"
+            android:layout_gravity="center_horizontal"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginBottom="24dp" />
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/textView12"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TextView" />
+
+                <TextView
+                    android:id="@+id/singleImagePressure"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="singleImagePressure" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/textView13"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TextView" />
+
+                <TextView
+                    android:id="@+id/singleImageTemp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="singleImageTemp" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/mapText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="VIEW THE MAP" />
+            </TableRow>
+        </TableLayout>
+
+
+
+    </LinearLayout>
 
 </FrameLayout>

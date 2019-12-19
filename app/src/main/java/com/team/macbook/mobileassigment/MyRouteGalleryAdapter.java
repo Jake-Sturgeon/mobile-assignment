@@ -1,39 +1,44 @@
 package com.team.macbook.mobileassigment;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.core.app.NotificationCompatSideChannelService;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.Observer;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.team.macbook.mobileassigment.database.CompleteRoute;
+import com.team.macbook.mobileassigment.database.Node;
 
-import java.util.Calendar;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class MyAdapter extends RecyclerView.Adapter<MyAdapter.View_Holder> {
+public class MyRouteGalleryAdapter extends RecyclerView.Adapter<MyRouteGalleryAdapter.View_Holder> {
     private Context context;
     private static List<CompleteRoute> items;
     private MyViewModel myViewModel;
-    public MyAdapter(List<CompleteRoute> items, MyViewModel myViewModel) {
+    private MyGalleryAdapter mAdapter;
+    private LifecycleOwner activity;
+
+    public MyRouteGalleryAdapter(List<CompleteRoute> items, MyViewModel myViewModel, LifecycleOwner activity) {
         this.items = items;
         this.myViewModel = myViewModel;
+        this.activity = activity;
     }
-    public MyAdapter(Context cont, List<CompleteRoute> items, MyViewModel myViewModel) {
+    public MyRouteGalleryAdapter(Context cont, List<CompleteRoute> items, MyViewModel myViewModel, LifecycleOwner activity) {
         super();
         this.items = items;
         this.myViewModel = myViewModel;
         context = cont;
+        this.activity = activity;
     }
 
     public void setItems(List<CompleteRoute> items) {
@@ -44,7 +49,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.View_Holder> {
     @Override
     public View_Holder onCreateViewHolder(ViewGroup parent, int viewType) {
         //Inflate the layout, initialize the View Holder
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_image,
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.gallery_by_route_image,
                 parent, false);
         View_Holder holder = new View_Holder(v);
         return holder;
@@ -57,12 +62,26 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.View_Holder> {
             holder.title.setText(items.get(position).route.getTitle());
             holder.preview.setText(String.valueOf(new Date(items.get(position).route.getStartDate())));
 
-            if (items.get(position).nodes.size() == 0) {
-                holder.imageView.setImageResource(R.drawable.joe1);
-            } else {
-                Bitmap myBitmap = BitmapFactory.decodeFile(items.get(position).nodes.get(0).getPicture_id());
-                holder.imageView.setImageBitmap(myBitmap);
-            }
+
+            mAdapter = new MyGalleryAdapter(new ArrayList<Node>(), myViewModel);
+            int numberOfColumns = 4;
+            holder.images_gallery.setLayoutManager(new GridLayoutManager(context, numberOfColumns));
+
+            holder.images_gallery.setAdapter(mAdapter);
+
+//            myViewModel.getAllCompleteRoutes().observe(activity , new Observer<List<CompleteRoute>>(){
+//                @Override
+//                public void onChanged(@Nullable final List<CompleteRoute> newValue) {
+//                    if (newValue != null) {
+//                        Log.d("HomeFrag", "Setting Items len "+newValue.size()+"");
+//                        mAdapter.setItems(newValue);
+//
+//                    }
+//                }});
+
+
+            //holder.imageView.setImageResource(R.drawable.joe1);
+
 
         }
         //animate(holder);
@@ -79,12 +98,12 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.View_Holder> {
     public class View_Holder extends RecyclerView.ViewHolder {
         TextView title;
         TextView preview;
-        ImageView imageView;
+        RecyclerView images_gallery;
         View_Holder(View itemView) {
             super(itemView);
             title = (TextView) itemView.findViewById(R.id.title);
             preview = (TextView) itemView.findViewById(R.id.preview);
-            imageView = (ImageView) itemView.findViewById(R.id.image_item);
+            images_gallery = (RecyclerView) itemView.findViewById(R.id.route_pictures);
         }
     }
 

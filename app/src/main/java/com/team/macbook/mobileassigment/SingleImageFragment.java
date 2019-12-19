@@ -19,8 +19,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.team.macbook.mobileassigment.database.CompleteRoute;
+import com.team.macbook.mobileassigment.database.Node;
+import com.team.macbook.mobileassigment.database.Route;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -50,19 +53,31 @@ public class SingleImageFragment extends Fragment {
         mAdapter = new MyAdapter(new ArrayList<CompleteRoute>(), myViewModel);
 
 
-        myViewModel.getViewItemSingle().observe(this, new Observer<CompleteRoute>(){
+        myViewModel.getViewItemSingle().observe(this, new Observer<Node>(){
             @Override
-            public void onChanged(@Nullable final CompleteRoute element) {
+            public void onChanged(@Nullable final Node element) {
                 if (element != null) {
                     System.out.println("HELLO JAKE");
                     ImageView imageView = (ImageView) view.findViewById(R.id.image);
-                    TextView textView = (TextView) view.findViewById(R.id.singleImageTitle);
 
+                    TextView dateTextView = (TextView)  view.findViewById(R.id.singleImageDate);
+                    TextView pressTextView = (TextView)  view.findViewById(R.id.singleImagePressure);
+                    pressTextView.setText(element.getBar()+"");
+                    TextView tempTextView = (TextView)  view.findViewById(R.id.singleImageTemp);
+                    tempTextView.setText(element.getTemp()+"");
 //                    if (element.nodes.get(0).getPicture_id() != -1) {
 //
 //                    }
-                    imageView.setImageResource(R.drawable.joe1);
-                    textView.setText(element.route.getTitle());
+                    Bitmap myBitmap = BitmapFactory.decodeFile(element.getPicture_id());
+                    imageView.setImageBitmap(myBitmap);
+                    myViewModel.getRouteFromId(element.getRoute_id()).observe(getActivity(), new Observer<Route>() {
+                        @Override
+                        public void onChanged(Route s) {
+                            TextView titleTextView = (TextView) view.findViewById(R.id.singleImageTitle);
+                            titleTextView.setText(s.getTitle());
+                        }
+                    });
+
 
                 }
             }});

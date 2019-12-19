@@ -1,6 +1,8 @@
 package com.team.macbook.mobileassigment;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,26 +12,31 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.team.macbook.mobileassigment.database.CompleteRoute;
+import com.team.macbook.mobileassigment.database.Node;
+import com.team.macbook.mobileassigment.database.Route;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 public class MyGalleryAdapter extends RecyclerView.Adapter<MyGalleryAdapter.View_Holder> {
     private Context context;
-    private static List<CompleteRoute> items;
+    private static List<Node> items;
     private MyViewModel myViewModel;
-    public MyGalleryAdapter(List<CompleteRoute> items, MyViewModel myViewModel) {
+
+    public MyGalleryAdapter(List<Node> items, MyViewModel myViewModel) {
         this.items = items;
         this.myViewModel = myViewModel;
     }
-    public MyGalleryAdapter(Context cont, List<CompleteRoute> items, MyViewModel myViewModel) {
+    public MyGalleryAdapter(Context cont, List<Node> items, MyViewModel myViewModel) {
         super();
         this.items = items;
         this.myViewModel = myViewModel;
         context = cont;
     }
 
-    public void setItems(List<CompleteRoute> items) {
+
+    public void setItems(List<Node> items) {
         this.items = items;
         notifyDataSetChanged();
     }
@@ -49,12 +56,14 @@ public class MyGalleryAdapter extends RecyclerView.Adapter<MyGalleryAdapter.View
         if (holder!=null && items.get(position)!=null) {
             //holder.title.setText(items.get(position).route.getTitle());
             //holder.preview.setText(String.valueOf(new Date(items.get(position).route.getStartDate())));
-            holder.imageView.setImageResource(R.drawable.joe1);
+            Bitmap myBitmap = BitmapFactory.decodeFile(items.get(position).getPicture_id());
+            holder.imageView.setImageBitmap(myBitmap);
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     myViewModel.setViewItemSingle(items.get(position));
+
 
                 }
             });
@@ -66,18 +75,14 @@ public class MyGalleryAdapter extends RecyclerView.Adapter<MyGalleryAdapter.View
         return items.size();
     }
 
-    public static List<CompleteRoute> getItems() {
+    public static List<Node> getItems() {
         return items;
     }
 
     public class View_Holder extends RecyclerView.ViewHolder {
-        TextView title;
-        TextView preview;
         ImageView imageView;
         View_Holder(View itemView) {
             super(itemView);
-            title = (TextView) itemView.findViewById(R.id.title);
-            preview = (TextView) itemView.findViewById(R.id.preview);
             imageView = (ImageView) itemView.findViewById(R.id.image_item);
         }
     }
