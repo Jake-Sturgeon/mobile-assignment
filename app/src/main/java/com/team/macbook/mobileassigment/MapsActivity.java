@@ -161,7 +161,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public void enableUpdates(MenuItem i) {
         Intent serviceIntent = new Intent(this, ForegroundService.class);
-        serviceIntent.putExtra("inputExtra", "Foreground Service Example in Android");
+        serviceIntent.putExtra("inputExtra", "Mobile Assignment is tracking your location for your current route.");
         ContextCompat.startForegroundService(this, serviceIntent);
         i.setIcon(android.R.drawable.ic_menu_close_clear_cancel);
         i.setTitle(R.string.map_menu_2);

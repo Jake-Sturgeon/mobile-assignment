@@ -42,28 +42,14 @@ public class LocationService extends IntentService {
     private static final String TAG = "INTENTS";
     private Location mCurrentLocation;
     private String mLastUpdateTime;
-    private String currentRoute;
 
     private MyMapModel myMapModel;
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId){
-        Bundle ex = intent.getExtras();
-        for (String key : ex.keySet()){
-            Log.i("ad", ex.getString(key));
-            currentRoute = ex.getString(key);
-        }
-
-        return START_NOT_STICKY;
-    }
 
     @Override
     public void onCreate() {
         super.onCreate();
         myMapModel = ViewModelProviders.of(MapsActivity.getActivity()).get(MyMapModel.class);
-
-
-
     }
 
     public LocationService() {
@@ -77,21 +63,21 @@ public class LocationService extends IntentService {
      */
     @Override
     protected void onHandleIntent(Intent intent) {
-        Log.i("New Location", "Current CREATE: " + currentRoute);
-        Log.i("New Location", "Current CREATE: " + myMapModel);
         if (LocationResult.hasResult(intent)) {
             LocationResult locResults = LocationResult.extractResult(intent);
             if (locResults != null) {
                 for (Location location : locResults.getLocations()) {
                     if (location == null) continue;
                     //do something with the location
+
                     Log.i("New Location", "Current location: " + location);
+                    String currentRoute = myMapModel.retrieveRecentRouteId();
                     Log.i("New Location", "Current Route: " + currentRoute);
                     mCurrentLocation = location;
                     mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
                     Log.i("MAP", "new location Intent " + mCurrentLocation.toString());
                     Log.i(LocationService.class.getName(),"this is working");
-                    myMapModel.generateNewEdge(currentRoute, mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+                    myMapModel.generateNewEdge(myMapModel.retrieveRecentRouteId(), mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
                 }
             }
 

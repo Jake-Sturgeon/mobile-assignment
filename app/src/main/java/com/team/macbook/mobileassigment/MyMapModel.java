@@ -58,4 +58,8 @@ public class MyMapModel extends AndroidViewModel {
         this.current = c;
     }
 
+    public String retrieveRecentRouteId(){
+        return mRepository.retrieveRecentRouteId();
+    }
+
 }

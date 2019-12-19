@@ -50,6 +50,9 @@ public interface NodeDAO {
     @Query("SELECT * FROM route ORDER BY RANDOM() LIMIT 1")
     Route retrieveOneRoute();
 
+    @Query("SELECT routeId FROM route ORDER BY startDate DESC LIMIT 1")
+    String retrieveRecentRouteId();
+
     @Delete
     void deleteAllRoutes(Route... route);
 
