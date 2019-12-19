@@ -11,6 +11,9 @@ import androidx.room.Relation;
 
 import java.util.List;
 
+/**
+ * Complete route object that is a linker object for routes, edges, and nodes
+ */
 @Entity()
 public class CompleteRoute {
     @Embedded

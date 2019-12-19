@@ -2,7 +2,7 @@
  * Copyright (c) 2018. This code has been developed by Fabio Ciravegna, The University of Sheffield. All rights reserved. No part of this code can be used without the explicit written permission by the author
  */
 
-package com.team.macbook.mobileassigment;
+package com.team.macbook.mobileassigment.models;
 
 import android.app.Application;
 import android.os.AsyncTask;
@@ -126,34 +126,4 @@ class MyRepository extends ViewModel {
 
     }
 
-
-
-//    private static class getRoute extends AsyncTask<String, Void, Route> {
-//        private NodeDAO mAsyncTaskDao;
-//        getRoute(NodeDAO dao) {
-//            mAsyncTaskDao = dao;
-//        }
-//        @Override
-//        protected Route doInBackground(final String... params) {
-//            Route returned = mAsyncTaskDao.getRouteFromId(params[0]);
-//            return returned;
-//        }
-//        protected void onPostExecute(Route result) {
-//            showDialog("Downloaded " + result + " bytes");
-//            currentRoute = LiveData
-//        }
-//    }
-//
-//    private static class insertRoute extends AsyncTask<Route, Void, Void> {
-//        private NodeDAO mAsyncTaskDao;
-//        insertRoute(NodeDAO dao) {
-//            mAsyncTaskDao = dao;
-//        }
-//        @Override
-//        protected Void doInBackground(final Route... params) {
-//            mAsyncTaskDao.insertRoute(params[0]);
-//            Log.i("MyRepository", "route id generated: "+params[0].getRouteId()+"");
-//            return null;
-//        }
-//    }
 }

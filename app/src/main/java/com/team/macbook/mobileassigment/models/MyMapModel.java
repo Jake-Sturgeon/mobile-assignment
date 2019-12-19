@@ -1,4 +1,4 @@
-package com.team.macbook.mobileassigment;
+package com.team.macbook.mobileassigment.models;
 
 import android.app.Application;
 
@@ -12,12 +12,21 @@ import androidx.lifecycle.Observer;
 import com.team.macbook.mobileassigment.database.CompleteRoute;
 import com.team.macbook.mobileassigment.database.Route;
 
+/**
+ * MapModel viewmodel
+ */
 public class MyMapModel extends AndroidViewModel {
     private final MyRepository mRepository;
     private String current;
 
     private MutableLiveData<CompleteRoute> cr = new MutableLiveData<>();
 
+    /**
+     *
+     * Creates the viewmodel
+     *
+     * @param application
+     */
     public MyMapModel (Application application) {
         super(application);
         // creation and connection to the Repository
@@ -25,6 +34,12 @@ public class MyMapModel extends AndroidViewModel {
 
     }
 
+    /**
+     * sets the current route observer
+     *
+     * @param id
+     * @param thread
+     */
     public void setCR(String id, LifecycleOwner thread) {
         LiveData<CompleteRoute> temp = mRepository.getCompleteRouteFromId(id);
         temp.observe(thread, new Observer<CompleteRoute>() {
@@ -36,10 +51,31 @@ public class MyMapModel extends AndroidViewModel {
 
     }
 
+    /**
+     *
+     * Generates a new node
+     *
+     *
+     * @param currentRoute
+     * @param lat
+     * @param lon
+     * @param picture
+     * @param icon
+     * @param temp
+     * @param bar
+     */
     public void generateNewNode(String currentRoute, double lat, double lon, String picture, String icon, float temp, float bar) {
         mRepository.generateNewNode(currentRoute, lat, lon, picture, icon, temp, bar);
     }
 
+    /**
+     *
+     * Generates a new edge
+     *
+     * @param currentRoute
+     * @param lat
+     * @param lon
+     */
     public void generateNewEdge(String currentRoute ,double lat, double lon) {
         mRepository.generateNewEdge(currentRoute, lat, lon);
     }
@@ -51,6 +87,11 @@ public class MyMapModel extends AndroidViewModel {
         return cr;
     }
 
+    /**
+     * get current id
+     *
+     * @return
+     */
     public String getCurrentID(){
         return current;
     }
@@ -59,10 +100,23 @@ public class MyMapModel extends AndroidViewModel {
         this.current = c;
     }
 
+    /**
+     *
+     * Returns the most resent route
+     *
+     * @return
+     */
     public String retrieveRecentRouteId() {
         return mRepository.retrieveRecentRouteId();
     }
 
+    /**
+     *
+     * Gets route from a given id
+     *
+     * @param id
+     * @return
+     */
     public LiveData<Route> getRouteFromId(String id){
         return mRepository.getRouteFromId(id);
 

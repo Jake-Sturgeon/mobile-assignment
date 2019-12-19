@@ -1,7 +1,11 @@
-package com.team.macbook.mobileassigment;
+package com.team.macbook.mobileassigment.fragments;
 
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -10,12 +14,9 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-
+import com.team.macbook.mobileassigment.adapters.MyGalleryByRouteAdaptor;
+import com.team.macbook.mobileassigment.models.MyViewModel;
+import com.team.macbook.mobileassigment.R;
 import com.team.macbook.mobileassigment.database.CompleteRoute;
 
 import java.util.ArrayList;
@@ -25,27 +26,39 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class HomeFragment extends Fragment {
+public class GalleryByRouteFragment extends Fragment {
     private View view;
     private MyViewModel myViewModel;
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
-    private MyAdapter mAdapter;
+    private MyGalleryByRouteAdaptor mAdapter;
 
 
-
-    public HomeFragment() {
+    /**
+     * Required empty constructor
+     */
+    public GalleryByRouteFragment() {
         // Required empty public constructor
     }
 
 
+    /**
+     *
+     * Creates view, recycler views, buttons, viewmodels
+     *
+     *
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         view = inflater.inflate(R.layout.fragment_home, container, false);
         myViewModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
-        mAdapter = new MyAdapter(new ArrayList<CompleteRoute>(), myViewModel);
+        mAdapter = new MyGalleryByRouteAdaptor(new ArrayList<CompleteRoute>(), myViewModel);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.my_list);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getContext());
@@ -57,7 +70,14 @@ public class HomeFragment extends Fragment {
             public void onChanged(@Nullable final List<CompleteRoute> newValue) {
                 if (newValue != null) {
                     Log.d("HomeFrag", "Setting Items len "+newValue.size()+"");
-                    mAdapter.setItems(newValue);
+                    List<CompleteRoute> routes = new ArrayList<CompleteRoute>();
+                    for (CompleteRoute cr: newValue) {
+                        if (cr.nodes.size() != 0) {
+                            routes.add(cr);
+                        }
+
+                    }
+                    mAdapter.setItems(routes);
 
                     if (newValue.size() > 0)
                         Log.d("ROU", "" + newValue.get(0).edges.size());

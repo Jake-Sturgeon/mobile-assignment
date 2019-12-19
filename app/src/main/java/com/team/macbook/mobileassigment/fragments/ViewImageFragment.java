@@ -1,4 +1,4 @@
-package com.team.macbook.mobileassigment;
+package com.team.macbook.mobileassigment.fragments;
 
 
 import android.graphics.Bitmap;
@@ -8,19 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.team.macbook.mobileassigment.database.CompleteRoute;
-import com.team.macbook.mobileassigment.database.Node;
-import com.team.macbook.mobileassigment.database.Route;
-
-import java.util.ArrayList;
+import com.team.macbook.mobileassigment.models.MyViewModel;
+import com.team.macbook.mobileassigment.R;
 
 
 /**
@@ -30,11 +25,23 @@ public class ViewImageFragment extends Fragment {
     private View view;
     private MyViewModel myViewModel;
 
+    /**
+     * Required empty constructor
+     */
     public ViewImageFragment() {
         // Required empty public constructor
     }
 
 
+    /**
+     *
+     * Creates views, buttons, viewers, viewmodels
+     *
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

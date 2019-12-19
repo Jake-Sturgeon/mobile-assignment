@@ -2,7 +2,7 @@
  * Copyright (c) 2019. This code has been developed by Fabio Ciravegna, The University of Sheffield. All rights reserved. No part of this code can be used without the explicit written permission by the author
  */
 
-package com.team.macbook.mobileassigment;
+package com.team.macbook.mobileassigment.sensors;
 
 import android.content.Context;
 import android.hardware.Sensor;
@@ -32,7 +32,6 @@ public class Barometer {
 
     private float pressureValue = 0;
 
-//    private Accelerometer accelerometer;
     /**
      * this is used to stop the barometer if we have not seen any movement in the last 20 seconds
      */

@@ -1,7 +1,6 @@
-package com.team.macbook.mobileassigment;
+package com.team.macbook.mobileassigment.fragments;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -10,26 +9,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.team.macbook.mobileassigment.database.CompleteRoute;
+import com.team.macbook.mobileassigment.models.MyViewModel;
+import com.team.macbook.mobileassigment.R;
+
 import android.R.drawable;
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -43,6 +36,11 @@ public class CurrentFragment extends Fragment implements OnMapReadyCallback {
     private FragmentActivity myContext;
     private MapView mapView;
 
+    /**
+     * Attaches a context to the fragment activity
+     *
+     * @param context
+     */
     @Override
     public void onAttach(Context context) {
         myContext = (FragmentActivity) context;
@@ -50,11 +48,23 @@ public class CurrentFragment extends Fragment implements OnMapReadyCallback {
     }
 
 
+    /**
+     * Required empty constructor
+     */
     public CurrentFragment() {
         // Required empty public constructor
     }
 
 
+    /**
+     *
+     * Creates the View, modelviews, and buttons
+     *
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -96,6 +106,11 @@ public class CurrentFragment extends Fragment implements OnMapReadyCallback {
         return view;
     }
 
+    /**
+     * Google map callback
+     *
+     * @param googleMap
+     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;

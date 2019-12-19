@@ -33,42 +33,75 @@ public class Edge {
         this.latitude = latitude;
     }
 
+    /**
+     * getEdgeId
+     * @return
+     */
     public int getEdgeId() {
         return edgeId;
     }
 
+    /**
+     * setEdgeId
+     * @param edgeId
+     */
     public void setEdgeId(@NonNull int edgeId) {
         this.edgeId = edgeId;
     }
 
+    /**
+     * @return
+     */
     public int getOrder() {
         return order;
     }
 
+    /**
+     * @param order
+     */
     public void setOrder(@NonNull int order) {
         this.order = order;
     }
 
+    /**
+     * @return
+     */
     public double getLatitude() {
         return latitude;
     }
 
+    /**
+     * @param latitude
+     */
     public void setLatitude(@NonNull double latitude) {
         this.latitude = latitude;
     }
 
+    /**
+     * @return
+     */
     public double getLongitude() {
         return longitude;
     }
 
+    /**
+     * @param longitude
+     */
     public void setLongitude(@NonNull double longitude) {
         this.longitude = longitude;
     }
 
+    /**
+     * @return
+     */
     @NonNull
     public String getroute_id() {
         return route_id;
     }
+
+    /**
+     * @param id
+     */
     public void setroute_id(@NonNull String id) {
         this.route_id = id;
     }

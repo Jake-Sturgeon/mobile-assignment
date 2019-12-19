@@ -2,42 +2,39 @@
  * Copyright (c) 2018. This code has been developed by Fabio Ciravegna, The University of Sheffield. All rights reserved. No part of this code can be used without the explicit written permission by the author
  */
 
-package com.team.macbook.mobileassigment;
+package com.team.macbook.mobileassigment.activities;
 
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-import android.R.drawable;
-
-import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.team.macbook.mobileassigment.R;
 import com.team.macbook.mobileassigment.database.CompleteRoute;
 import com.team.macbook.mobileassigment.database.Node;
+import com.team.macbook.mobileassigment.fragments.CurrentFragment;
+import com.team.macbook.mobileassigment.fragments.DBFragment;
+import com.team.macbook.mobileassigment.fragments.GalleryByRouteFragment;
+import com.team.macbook.mobileassigment.fragments.GalleryFragment;
+import com.team.macbook.mobileassigment.fragments.HomeFragment;
+import com.team.macbook.mobileassigment.fragments.SingleImageFragment;
+import com.team.macbook.mobileassigment.fragments.SingleRouteFragment;
+import com.team.macbook.mobileassigment.fragments.ViewImageFragment;
+import com.team.macbook.mobileassigment.models.MyViewModel;
+import com.team.macbook.mobileassigment.services.ForegroundService;
 
-import java.util.List;
 import java.util.Stack;
-
-import pl.aprilapps.easyphotopicker.EasyImage;
 
 
 public class MyView extends AppCompatActivity {
@@ -55,7 +52,11 @@ public class MyView extends AppCompatActivity {
     private Fragment this_frag;
 
 
-
+    /**
+     * Switches to the create fragment
+     *
+     * @param item
+     */
     public void switchViewDB(MenuItem item){
         if (db_frag == null){
             db_frag = new DBFragment();
@@ -65,13 +66,18 @@ public class MyView extends AppCompatActivity {
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-// Replace whatever is in the fragment_container view with this fragment,
-// and add the transaction to the back stack
+        // Replace whatever is in the fragment_container view with this fragment,
+        // and add the transaction to the back stack
         transaction.replace(R.id.fragment_container, db_frag);
         this_frag = db_frag;
         transaction.commit();
     }
 
+    /**
+     * Shows the gallery sort by route
+     *
+     * @param item
+     */
     public void switchViewRouteGallery(MenuItem item){
         if (gallery_by_route_frag == null){
             gallery_by_route_frag = new GalleryByRouteFragment();
@@ -81,13 +87,17 @@ public class MyView extends AppCompatActivity {
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-// Replace whatever is in the fragment_container view with this fragment,
-// and add the transaction to the back stack
+        // Replace whatever is in the fragment_container view with this fragment,
+        // and add the transaction to the back stack
         transaction.replace(R.id.fragment_container, gallery_by_route_frag);
         this_frag = gallery_by_route_frag;
         transaction.commit();
     }
 
+    /**
+     * Shows list of routes
+     * @param item
+     */
     public void switchViewHome(MenuItem item){
         if (home_frag == null){
             home_frag = new HomeFragment();
@@ -97,13 +107,19 @@ public class MyView extends AppCompatActivity {
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-// Replace whatever is in the fragment_container view with this fragment,
-// and add the transaction to the back stack
+        // Replace whatever is in the fragment_container view with this fragment,
+        // and add the transaction to the back stack
         transaction.replace(R.id.fragment_container, home_frag);
         this_frag = home_frag;
         transaction.commit();
     }
 
+
+    /**
+     * Switches to the gallery that provides all the images
+     *
+     * @param item
+     */
     public void switchViewGallery(MenuItem item){
         if (gallery_frag == null){
             gallery_frag = new GalleryFragment();
@@ -114,8 +130,8 @@ public class MyView extends AppCompatActivity {
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-// Replace whatever is in the fragment_container view with this fragment,
-// and add the transaction to the back stack
+        // Replace whatever is in the fragment_container view with this fragment,
+        // and add the transaction to the back stack
         transaction.replace(R.id.fragment_container, gallery_frag);
 
         this_frag = gallery_frag;
@@ -132,6 +148,11 @@ public class MyView extends AppCompatActivity {
         return false;
     }
 
+    /**
+     * Creates all the buttons, history, all the fragments, view models
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -168,13 +189,7 @@ public class MyView extends AppCompatActivity {
             }
         });
 
-//        myViewModel.getNodeToDisplay().observe(this, new Observer<Node>(){
-//            public void onChanged(@Nullable final Node newValue) {
-//                if (newValue != null) {
-//                    TextView tv = findViewById(R.id.textView);
-//                    tv.setText(newValue.getRoute_id() + "");
-//                }
-//            }});
+
 
 
 
@@ -258,22 +273,26 @@ public class MyView extends AppCompatActivity {
             }});
     }
 
+    /**
+     * Pauses activity
+     */
     @Override
     protected void onPause(){
         super.onPause();
-//        myViewModel.pauseAccelerometer();
-//        myViewModel.pauseBarometer();
-//        myViewModel.pauseThermometer();
     }
 
+    /**
+     * resumes the activity
+     */
     @Override
     protected void onResume(){
         super.onResume();
-//        myViewModel.startAccelerometer();
-//        myViewModel.startBarometer();
-//        myViewModel.startThermometer();
 
     }
+
+    /**
+     * Handles the backpress by poping the history stack
+     */
     @Override
     public void onBackPressed() {
         if (previous_frags.empty()) {

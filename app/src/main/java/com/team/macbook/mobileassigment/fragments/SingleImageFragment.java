@@ -1,14 +1,12 @@
-package com.team.macbook.mobileassigment;
+package com.team.macbook.mobileassigment.fragments;
 
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +19,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -33,8 +30,10 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.team.macbook.mobileassigment.adapters.MyAdapter;
+import com.team.macbook.mobileassigment.models.MyViewModel;
+import com.team.macbook.mobileassigment.R;
 import com.team.macbook.mobileassigment.database.CompleteRoute;
 import com.team.macbook.mobileassigment.database.Edge;
 import com.team.macbook.mobileassigment.database.Node;
@@ -43,7 +42,6 @@ import com.team.macbook.mobileassigment.database.Route;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -63,12 +61,23 @@ public class SingleImageFragment extends Fragment implements OnMapReadyCallback,
     private Map<Marker, Node> nodesGetter = new HashMap<>();
 
 
-
+    /**
+     * Required empty constructor
+     */
     public SingleImageFragment() {
         // Required empty public constructor
     }
 
 
+    /**
+     *
+     * Creates views, viewmodels, adaptors, and buttons
+     *
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -129,6 +138,9 @@ public class SingleImageFragment extends Fragment implements OnMapReadyCallback,
 
     }
 
+    /**
+     * Resumes activity
+     */
     @Override
     public void onResume() {
         mapView.onResume();
@@ -144,6 +156,9 @@ public class SingleImageFragment extends Fragment implements OnMapReadyCallback,
         return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 
+    /**
+     * Focuses the camera on the images route
+     */
     private void focusCamera(){
         final Node cn = currentNode.getValue();
 
@@ -180,6 +195,11 @@ public class SingleImageFragment extends Fragment implements OnMapReadyCallback,
 
     }
 
+    /**
+     * Google maps callback function
+     *
+     * @param googleMap
+     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         gmap = googleMap;
@@ -198,11 +218,24 @@ public class SingleImageFragment extends Fragment implements OnMapReadyCallback,
     }
 
 
+    /**
+     * Needed for infocontents
+     *
+     * @param marker
+     * @return
+     */
     @Override
     public View getInfoWindow(Marker marker) {
         return null;
     }
 
+    /**
+     *
+     * Added Info to the Marker popup
+     *
+     * @param marker
+     * @return
+     */
     @Override
     public View getInfoContents(Marker marker) {
         try{

@@ -1,9 +1,7 @@
-package com.team.macbook.mobileassigment;
+package com.team.macbook.mobileassigment.activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.ActivityManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -13,71 +11,54 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
-import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
-import android.util.AttributeSet;
 import android.util.Log;
-import android.view.ActionProvider;
-import android.view.ContextMenu;
 import android.view.MenuItem;
-import android.view.SubMenu;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentTransaction;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.team.macbook.mobileassigment.R;
 import com.team.macbook.mobileassigment.database.CompleteRoute;
 import com.team.macbook.mobileassigment.database.Edge;
 import com.team.macbook.mobileassigment.database.Node;
 import com.team.macbook.mobileassigment.database.Route;
+import com.team.macbook.mobileassigment.models.MyMapModel;
+import com.team.macbook.mobileassigment.sensors.Barometer;
+import com.team.macbook.mobileassigment.sensors.Thermometer;
+import com.team.macbook.mobileassigment.services.ForegroundService;
+import com.team.macbook.mobileassigment.services.LocationService;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -86,6 +67,9 @@ import java.util.Map;
 import pl.aprilapps.easyphotopicker.DefaultCallback;
 import pl.aprilapps.easyphotopicker.EasyImage;
 
+/**
+ * Maps activity runs the map activity
+ */
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.InfoWindowAdapter {
 
     private static AppCompatActivity activity;
@@ -93,15 +77,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final int ACCESS_FINE_LOCATION = 123;
     private static final int CAMERA_REQUEST_CODE = 7500;
 
-    private LocationRequest mLocationRequest;
-    private PendingIntent mLocationPendingIntent;
-    private static final float SMALLEST_DISPLACEMENT = 0.5F;
-
-
     private Thermometer temp;
     private Barometer bar;
-    private Accelerometer acc;
-    private ForegroundService mService = null;
 
 
     private String currentRoute;
@@ -114,8 +91,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Map<Marker, Node> nodesGetter = new HashMap<>();
 
 
-
-
+    /**
+     *
+     * When a moment is taken this function is called.
+     *
+     * This function generates a new node, which contains the sensor readings, locations, and
+     * images
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -147,9 +133,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             Log.i("Location", "Temp: " + t);
                             Log.i("Location", "Bar: " + b);
 
-
-//                                            mMap.addMarker(new MarkerOptions().position(loc)
-//                                                    .title("Sensor Reading").snippet("Temp: " + t + "\nPressure: " + b));
                             myMapModel.generateNewNode(currentRoute, lat, longi, imageS, newPath, t, b);
                         }
 
@@ -159,14 +142,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
+    /**
+     * @return AppCompatActivity activity
+     */
     public static AppCompatActivity getActivity() {
         return activity;
     }
 
+    /**
+     * @param activity
+     */
     public static void setActivity(AppCompatActivity activity) {
         MapsActivity.activity = activity;
     }
 
+    /**
+     * @return GoogleMap mMap
+     */
     public static GoogleMap getMap() {
         return mMap;
     }
@@ -174,15 +166,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void initEasyImage() {
         EasyImage.configuration(this)
                 .setImagesFolderName("EasyImage sample")
-// it adds new pictures to the gallery
+                // it adds new pictures to the gallery
                 .setCopyTakenPhotosToPublicGalleryAppFolder(true)
-// probably unnecessary
                 .setCopyPickedImagesToPublicGalleryAppFolder(false)
-// it allows to select multiple pictures in the gallery
+                // it allows to select multiple pictures in the gallery
                 .setAllowMultiplePickInGallery(true);
     }
 
 
+    /**
+     * Removes take moment popup
+     */
     public void hidePopup(){
         ConstraintLayout layout = findViewById(R.id.mapsLayout);
         ConstraintSet constraintSet = new ConstraintSet();
@@ -192,6 +186,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         constraintSet.applyTo(layout);
     }
 
+    /**
+     * Opens the camera if available otherwise the library
+     */
     public void takePhoto() {
         if (haveCamera()) {
             EasyImage.openCamera(this, 0);
@@ -202,12 +199,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
+    /**
+     * opens the gallery
+     */
     public void choosePhoto() {
-
         EasyImage.openGallery(this, 0);
-
-
     }
+
     private boolean haveCamera() {
         return (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED);
     }
@@ -218,6 +216,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
+    /**
+     * opens the create moment tray
+     *
+     * @param i
+     */
     public void openCreateMoment(MenuItem i) {
         ConstraintLayout layout = findViewById(R.id.mapsLayout);
         ConstraintSet constraintSet = new ConstraintSet();
@@ -231,6 +234,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private double lat = 100;
     private double longi = 200;
 
+    /**
+     * Starts location tracking and changes buttons
+     *
+     * @param i
+     */
     public void enableUpdates(MenuItem i) {
         Intent serviceIntent = new Intent(this, ForegroundService.class);
         serviceIntent.putExtra("inputExtra", "Mobile Assignment is tracking your location for your current route.");
@@ -259,6 +267,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
 
+    /**
+     * Starts location tracking
+     */
     public void enableUpdates() {
         Intent serviceIntent = new Intent(this, ForegroundService.class);
         serviceIntent.putExtra("inputExtra", "Mobile Assignment is tracking your location for your current route.");
@@ -278,8 +289,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         this.registerReceiver(receiver, new IntentFilter(LocationService.class.getName()));
     }
 
+    /**
+     *
+     * Disables tracking and sensors
+     *
+     * @param i
+     */
     public void disableUpdates(MenuItem i) {
-        acc.stopAccelerometer();
+
         bar.stopBarometer();
         temp.stopThermometer();
         Intent serviceIntent = new Intent(this, ForegroundService.class);
@@ -295,14 +312,22 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
 
+    /**
+     * Disables tracking and sensors
+     */
     public void disableUpdates() {
-        acc.stopAccelerometer();
+
         bar.stopBarometer();
         temp.stopThermometer();
         Intent serviceIntent = new Intent(this, ForegroundService.class);
         stopService(serviceIntent);
     }
 
+    /**
+     *
+     * Creates all the observers, buttons, sensors, and map listeners
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -346,15 +371,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         bar = new Barometer(getApplicationContext());
 
-        acc = new Accelerometer(getApplicationContext(), bar);
-
-
         initLocations();
 
-
-
-
-//
         myMapModel.getCRID().observe(this, new Observer<CompleteRoute>() {
             @Override
             public void onChanged(@Nullable final CompleteRoute newValue) {
@@ -423,11 +441,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
+    /**
+     * Finishes the activity
+     *
+     * @param i
+     */
     public void finishActivity(MenuItem i){
         disableUpdates();
         finish();
     }
 
+    /**
+     * Resumes activity
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -452,12 +478,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     };
 
+    /**
+     * Pauses activity
+     */
     @Override
     protected void onPause() {
         super.onPause();
     }
 
 
+    /**
+     *
+     * Get permissions from user
+     *
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
     @SuppressLint("MissingPermission")
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -507,6 +544,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.setInfoWindowAdapter(this);
     }
 
+    /**
+     * Save route if back button is pressed
+     */
     @Override
     public void onBackPressed() {
         disableUpdates();
@@ -555,11 +595,26 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
+
+    /**
+     *
+     * Required for Marker popups
+     *
+     * @param marker
+     * @return null
+     */
     @Override
     public View getInfoWindow(Marker marker) {
         return null;
     }
 
+    /**
+     *
+     * Set content for each Marker
+     *
+     * @param marker
+     * @return
+     */
     @Override
     public View getInfoContents(Marker marker) {
         try {
@@ -574,9 +629,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             pressTextView.setText(element.getBar()+"");
             TextView tempTextView = (TextView)  view.findViewById(R.id.singleImageTemp);
             tempTextView.setText(element.getTemp()+"");
-//                    if (element.nodes.get(0).getPicture_id() != -1) {
-//
-//                    }
+
             Bitmap myBitmap = BitmapFactory.decodeFile(element.getIcon_id());
             imageView.setImageBitmap(myBitmap);
             myMapModel.getRouteFromId(element.getRoute_id()).observe(getActivity(), new Observer<Route>() {
