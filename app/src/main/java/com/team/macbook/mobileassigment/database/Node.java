@@ -15,14 +15,16 @@ public class Node {
     private int id = 0;
     private String route_id = "";
     private String picture_id = "";
+    private String icon_id = "";
     private double latitude = 0.0;
     private double longitude = 0.0;
     private float temp;
     private float bar;
 
 
-    public Node(String route_id, String picture_id, double latitude, double longitude, float temp, float bar) {
+    public Node(String route_id, String picture_id, String icon_id, double latitude, double longitude, float temp, float bar) {
         this.route_id = route_id;
+        this.icon_id = icon_id;
         this.picture_id = picture_id;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -60,6 +62,14 @@ public class Node {
 
     public void setRoute_id(String route_id) {
         this.route_id = route_id;
+    }
+
+    public String getIcon_id() {
+        return icon_id;
+    }
+
+    public void setIcon_id(String icon_id) {
+        this.icon_id = icon_id;
     }
 
     public String getPicture_id() {
