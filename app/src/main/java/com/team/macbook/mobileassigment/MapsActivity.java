@@ -21,6 +21,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
@@ -74,6 +75,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Thermometer temp;
     private Barometer bar;
     private Accelerometer acc;
+    private ForegroundService mService = null;
 
 
     private String currentRoute;
@@ -158,7 +160,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void enableUpdates(MenuItem i) {
-        startLocationUpdates(getApplicationContext());
+        Intent serviceIntent = new Intent(this, ForegroundService.class);
+        serviceIntent.putExtra("inputExtra", "Foreground Service Example in Android");
+        ContextCompat.startForegroundService(this, serviceIntent);
         i.setIcon(android.R.drawable.ic_menu_close_clear_cancel);
         i.setTitle(R.string.map_menu_2);
         i.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
@@ -174,7 +178,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         acc.stopAccelerometer();
         bar.stopBarometer();
         temp.stopThermometer();
-        stopLocationUpdates();
+        Intent serviceIntent = new Intent(this, ForegroundService.class);
+        stopService(serviceIntent);
         i.setIcon(android.R.drawable.ic_menu_compass);
         i.setTitle(R.string.map_menu_1);
         i.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
@@ -204,7 +209,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         setActivity(this);
 
 
-
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -219,16 +223,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         initLocations();
 
-        LiveData<FusedLocationProviderClient> ld = new MutableLiveData<FusedLocationProviderClient>(mFusedLocationClient);
 
-        ld.observe(this, new Observer<FusedLocationProviderClient>() {
-            @Override
-            public void onChanged(@Nullable final FusedLocationProviderClient newValue) {
-                if (newValue != null) {
-                    startLocationUpdates(getApplicationContext());
-                }
-            }
-        });
 
 
 //
@@ -296,36 +291,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    public void startLocationUpdates(Context context) {
-        Intent intent = new Intent(context, LocationService.class);
-        mLocationPendingIntent = PendingIntent.getService(context, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            Task<Void> locationTask = mFusedLocationClient.requestLocationUpdates(mLocationRequest,
-                    mLocationPendingIntent);
-            if (locationTask != null) {
-                locationTask.addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        if (e instanceof ApiException) {
-                            Log.w("MapsActivity", ((ApiException) e).getStatusMessage());
-                        } else {
-                            Log.w("MapsActivity", e.getMessage());
-                        }
-                    }
-                });
 
-                locationTask.addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        Log.d("MapsActivity", "restarting gps successful!");
-                    }
-                });
-
-
-            }
-        }
-    }
 
     /**
      * it stops the location updates
@@ -344,13 +310,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         bar.startSensingPressure();
         temp.startThermometerRecording();
 
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(10000);
-        mLocationRequest.setFastestInterval(5000);
-        mLocationRequest.setSmallestDisplacement(SMALLEST_DISPLACEMENT);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
     }
 
 

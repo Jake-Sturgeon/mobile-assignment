@@ -47,9 +47,13 @@ public class LocationService extends IntentService {
 
     @Override
     public void onCreate() {
-        myMapModel = ViewModelProviders.of(MapsActivity.getActivity()).get(MyMapModel.class);
-        currentRoute = myMapModel.getCurrentID();
         super.onCreate();
+        myMapModel = ViewModelProviders.of(MapsActivity.getActivity()).get(MyMapModel.class);
+        if( myMapModel.getCurrentID() != null )
+            currentRoute = myMapModel.getCurrentID();
+        Log.i("New Location", "Current CREATE: " + currentRoute);
+        Log.i("New Location", "Current CREATE: " + myMapModel);
+
     }
 
     public LocationService() {
@@ -70,6 +74,7 @@ public class LocationService extends IntentService {
                     if (location == null) continue;
                     //do something with the location
                     Log.i("New Location", "Current location: " + location);
+                    Log.i("New Location", "Current Route: " + currentRoute);
                     mCurrentLocation = location;
                     mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
                     Log.i("MAP", "new location Intent " + mCurrentLocation.toString());

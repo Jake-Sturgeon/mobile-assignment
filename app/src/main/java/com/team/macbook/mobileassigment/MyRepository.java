@@ -52,7 +52,7 @@ class MyRepository extends ViewModel {
     }
 
     public void generateNewEdge(String id, double lat, double longi) {
-        Log.d("Edge-Create", id);
+//        Log.d("Edge-Create", id);
         new insertEdge(mDBDao).execute(new Edge(id, 0, lat, longi));
     }
 
