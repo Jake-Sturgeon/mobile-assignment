@@ -517,11 +517,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             double scale;
 
-            if (width > height){
-                scale = 200.0/width;
-            } else {
-                scale = 200.0/height;
-            }
+
+            scale = 300.0/height;
 
             Log.d("Width", ""+width);
             Log.d("Height", ""+height);

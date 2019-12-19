@@ -58,8 +58,14 @@ public class GalleryByRouteFragment extends Fragment {
             public void onChanged(@Nullable final List<CompleteRoute> newValue) {
                 if (newValue != null) {
                     Log.d("HomeFrag", "Setting Items len "+newValue.size()+"");
-                    System.out.print("GOT HERE");
-                    mAdapter.setItems(newValue);
+                    List<CompleteRoute> routes = new ArrayList<CompleteRoute>();
+                    for (CompleteRoute cr: newValue) {
+                        if (cr.nodes.size() != 0) {
+                            routes.add(cr);
+                        }
+
+                    }
+                    mAdapter.setItems(routes);
 
                     if (newValue.size() > 0)
                         Log.d("ROU", "" + newValue.get(0).edges.size());

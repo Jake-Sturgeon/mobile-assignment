@@ -30,4 +30,9 @@
     <string name="popup_photo">Take a photo</string>
     <string name="popup_gallery">Choose From Gallery</string>
 
+    <string name="pressure">Pressure:</string>
+    <string name="temp">Temperature:</string>
+    <string name="date">Date</string>
+    <string name="title">Title</string>
+
 </resources>
