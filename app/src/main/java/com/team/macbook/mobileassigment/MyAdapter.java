@@ -72,7 +72,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.View_Holder> {
             holder.imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    System.out.println("HELLO STEVE");
+
                     myViewModel.setViewRouteSingle(items.get(position));
 
                 }
@@ -81,7 +81,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.View_Holder> {
             holder.title.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    System.out.println("HELLO STEVE");
+
                     myViewModel.setViewRouteSingle(items.get(position));
 
                 }
@@ -90,7 +90,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.View_Holder> {
             holder.preview.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    System.out.println("HELLO STEVE");
+
                     myViewModel.setViewRouteSingle(items.get(position));
 
 

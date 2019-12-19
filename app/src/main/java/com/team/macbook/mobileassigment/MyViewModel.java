@@ -38,6 +38,7 @@ public class MyViewModel extends AndroidViewModel {
     private MutableLiveData<CompleteRoute> cr = new MutableLiveData<>();
     private MutableLiveData<Node> currentViewed = new MutableLiveData<>();
     private MutableLiveData<CompleteRoute> currentViewedRoute = new MutableLiveData<>();
+    private MutableLiveData<String> currentViewedImage = new MutableLiveData<>();
     private LiveData<List<CompleteRoute>> a_cr;
 
     private MutableLiveData<Boolean> route_active = new MutableLiveData<Boolean>(false);
@@ -169,6 +170,18 @@ public class MyViewModel extends AndroidViewModel {
         }
         return currentViewedRoute;
     }
+
+    public void setViewImage(String image) {
+        currentViewedImage.postValue(image);
+    }
+
+    public LiveData<String> getViewImage() {
+        if (currentViewedImage == null) {
+            currentViewedImage = new MutableLiveData<String>();
+        }
+        return currentViewedImage;
+    }
+
 
     public void setViewRouteSingle(CompleteRoute route) {
         currentViewedRoute.postValue(route);

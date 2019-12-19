@@ -57,7 +57,7 @@ public class SingleImageFragment extends Fragment {
             @Override
             public void onChanged(@Nullable final Node element) {
                 if (element != null) {
-                    System.out.println("HELLO JAKE");
+
                     ImageView imageView = (ImageView) view.findViewById(R.id.image);
 
                     TextView dateTextView = (TextView)  view.findViewById(R.id.singleImageDate);
@@ -77,6 +77,12 @@ public class SingleImageFragment extends Fragment {
                             titleTextView.setText(s.getTitle());
                         }
                     });
+
+                    imageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            myViewModel.setViewImage(element.getPicture_id());
+                        }});
 
 
                 }

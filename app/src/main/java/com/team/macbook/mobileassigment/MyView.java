@@ -33,6 +33,7 @@ import com.team.macbook.mobileassigment.database.CompleteRoute;
 import com.team.macbook.mobileassigment.database.Node;
 
 import java.util.List;
+import java.util.Stack;
 
 import pl.aprilapps.easyphotopicker.EasyImage;
 
@@ -45,7 +46,9 @@ public class MyView extends AppCompatActivity {
     private GalleryFragment gallery_frag;
     private SingleImageFragment single_image_frag;
     private SingleRouteFragment single_route_frag;
-
+    private ViewImageFragment view_image_frag;
+    private Stack<Fragment> previous_frags = new Stack<>();
+    private Fragment this_frag;
 
 
 
@@ -53,12 +56,15 @@ public class MyView extends AppCompatActivity {
         if (db_frag == null){
             db_frag = new DBFragment();
         }
+        previous_frags = new Stack<>();
+        previous_frags.add(home_frag);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
 // Replace whatever is in the fragment_container view with this fragment,
 // and add the transaction to the back stack
         transaction.replace(R.id.fragment_container, db_frag);
+        this_frag = db_frag;
         transaction.commit();
     }
 
@@ -66,11 +72,15 @@ public class MyView extends AppCompatActivity {
         if (home_frag == null){
             home_frag = new HomeFragment();
         }
+
+        previous_frags = new Stack<>();
+
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
 // Replace whatever is in the fragment_container view with this fragment,
 // and add the transaction to the back stack
         transaction.replace(R.id.fragment_container, home_frag);
+        this_frag = home_frag;
         transaction.commit();
     }
 
@@ -78,28 +88,19 @@ public class MyView extends AppCompatActivity {
         if (gallery_frag == null){
             gallery_frag = new GalleryFragment();
         }
+
+        previous_frags = new Stack<>();
+        previous_frags.add(home_frag);
+
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
 // Replace whatever is in the fragment_container view with this fragment,
 // and add the transaction to the back stack
         transaction.replace(R.id.fragment_container, gallery_frag);
+
+        this_frag = gallery_frag;
         transaction.commit();
     }
-
-    public void switchViewSingleImage(MenuItem item){
-        if (single_image_frag == null){
-            single_image_frag = new SingleImageFragment();
-        }
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
-// Replace whatever is in the fragment_container view with this fragment,
-// and add the transaction to the back stack
-        transaction.replace(R.id.fragment_container, single_image_frag);
-        transaction.commit();
-    }
-
-
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -125,6 +126,8 @@ public class MyView extends AppCompatActivity {
 
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.fragment_container, db_frag);
+                previous_frags.add(this_frag);
+                this_frag = db_frag;
                 transaction.commit();
             }
         });
@@ -143,6 +146,7 @@ public class MyView extends AppCompatActivity {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         transaction.replace(R.id.fragment_container, newFragment);
+        this_frag = home_frag;
         transaction.commit();
 
         myViewModel.getRoute_active().observe(this, new Observer<Boolean>() {
@@ -163,6 +167,8 @@ public class MyView extends AppCompatActivity {
 
                     FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                     transaction.replace(R.id.fragment_container, home_frag);
+                    previous_frags.add(this_frag);
+                    this_frag = home_frag;
                     transaction.commit();
 
                 }
@@ -177,6 +183,8 @@ public class MyView extends AppCompatActivity {
                     }
                     FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                     transaction.replace(R.id.fragment_container, single_image_frag);
+                    previous_frags.add(this_frag);
+                    this_frag = single_image_frag;
                     transaction.commit();
                 }
             }});
@@ -188,9 +196,27 @@ public class MyView extends AppCompatActivity {
                     if (single_route_frag == null){
                         single_route_frag = new SingleRouteFragment();
                     }
-                    System.out.println("HELLO JOE");
+
                     FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                     transaction.replace(R.id.fragment_container, single_route_frag);
+                    previous_frags.add(this_frag);
+                    this_frag = single_route_frag;
+                    transaction.commit();
+                }
+            }});
+
+        myViewModel.getViewImage().observe(this, new Observer<String>(){
+            @Override
+            public void onChanged(@Nullable final String element) {
+                if (element != null) {
+                    if (view_image_frag == null){
+                        view_image_frag = new ViewImageFragment();
+                    }
+
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.fragment_container, view_image_frag);
+                    previous_frags.add(this_frag);
+                    this_frag = view_image_frag;
                     transaction.commit();
                 }
             }});
@@ -212,5 +238,19 @@ public class MyView extends AppCompatActivity {
 //        myViewModel.startThermometer();
 
     }
+    @Override
+    public void onBackPressed() {
+        if (previous_frags.empty()) {
+            finish();
+        } else {
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            this_frag = previous_frags.pop();
+            transaction.replace(R.id.fragment_container, this_frag);
+            transaction.commit();
+        }
+
+
+    }
+
 }
 
