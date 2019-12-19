@@ -21,8 +21,18 @@ public class Node {
     private float temp;
     private float bar;
 
+    public long getTime() {
+        return time;
+    }
 
-    public Node(String route_id, String picture_id, String icon_id, double latitude, double longitude, float temp, float bar) {
+    public void setTime(long time) {
+        this.time = time;
+    }
+
+    private long time;
+
+
+    public Node(String route_id, String picture_id, String icon_id, double latitude, double longitude, float temp, float bar, long time) {
         this.route_id = route_id;
         this.icon_id = icon_id;
         this.picture_id = picture_id;
@@ -30,6 +40,7 @@ public class Node {
         this.longitude = longitude;
         this.temp = temp;
         this.bar = bar;
+        this.time = time;
     }
 
     public float getTemp() {

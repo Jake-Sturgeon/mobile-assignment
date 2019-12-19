@@ -48,7 +48,7 @@ class MyRepository extends ViewModel {
      * called by the UI to request the generation of a new random number
      */
     public void generateNewNode(String id, double lat, double longi, String pic, String icon, float temp, float bar) {
-        new insertNode(mDBDao).execute(new Node(id, pic, icon, lat, longi, temp, bar));
+        new insertNode(mDBDao).execute(new Node(id, pic, icon, lat, longi, temp, bar, Calendar.getInstance().getTimeInMillis()));
     }
 
     public void generateNewEdge(String id, double lat, double longi) {

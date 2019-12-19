@@ -3,7 +3,10 @@ package com.team.macbook.mobileassigment;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,6 +28,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -87,6 +91,7 @@ public class SingleImageFragment extends Fragment implements OnMapReadyCallback 
                     ImageView imageView = (ImageView) view.findViewById(R.id.image);
 
                     TextView dateTextView = (TextView)  view.findViewById(R.id.singleImageDate);
+                    dateTextView.setText(String.valueOf(new Date(element.getTime())));
                     TextView pressTextView = (TextView)  view.findViewById(R.id.singleImagePressure);
                     pressTextView.setText(element.getBar()+"");
                     TextView tempTextView = (TextView)  view.findViewById(R.id.singleImageTemp);
@@ -127,6 +132,15 @@ public class SingleImageFragment extends Fragment implements OnMapReadyCallback 
         super.onResume();
     }
 
+    private BitmapDescriptor getMarker(Drawable drawable) {
+        Canvas canvas = new Canvas();
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        canvas.setBitmap(bitmap);
+        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+        drawable.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
+    }
+
     private void focusCamera(){
         final Node cn = currentNode.getValue();
 
@@ -141,17 +155,15 @@ public class SingleImageFragment extends Fragment implements OnMapReadyCallback 
                 for (Node node : newValue.nodes) {
                     LatLng point = new LatLng(node.getLatitude(), node.getLongitude());
                     if (node.getId() == cn.getId()){
-                        Marker marker = gmap.addMarker(new MarkerOptions().title(" ").position(point).snippet("Temp: " + node.getTemp() + "\nPressure: " + node.getBar()));
+                        Marker marker = gmap.addMarker(new MarkerOptions().title(" ").position(point).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)).snippet("Temp: " + node.getTemp() + "\nPressure: " + node.getBar()));
                     } else {
-                        Marker marker = gmap.addMarker(new MarkerOptions().title(" ").position(point).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)).snippet("Temp: " + node.getTemp() + "\nPressure: " + node.getBar()));
+                        Marker marker = gmap.addMarker(new MarkerOptions().title(" ").position(point).icon(getMarker(getResources().getDrawable(R.drawable.alt_other_marker))).snippet("Temp: " + node.getTemp() + "\nPressure: " + node.getBar()));
                     }
 
 
                 }
                 gmap.addPolyline(options);
-                if (options.getPoints().size() > 0) {
-                    gmap.animateCamera(CameraUpdateFactory.newLatLngZoom(options.getPoints().get(options.getPoints().size() - 1), 15.0f));
-                }
+                gmap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(cn.getLatitude(), cn.getLongitude()), 15.0f));
             }
         });
 
