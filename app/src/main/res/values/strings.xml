@@ -22,7 +22,7 @@
     <string name="map_menu_1">Start</string>
     <string name="map_menu_2">Pause</string>
     <string name="map_menu_3">Create a Moment</string>
-    <string name="map_menu_4">Save Route</string>
+    <string name="map_menu_4">Finish Route</string>
 
     <string name="single_image_title">Route Title</string>
     <string name="single_image_date">Date Taken</string>
