@@ -241,7 +241,7 @@ public class MyView extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (previous_frags.empty()) {
-            finish();
+            moveTaskToBack(true);
         } else {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             this_frag = previous_frags.pop();
