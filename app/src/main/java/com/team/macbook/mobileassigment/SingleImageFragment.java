@@ -205,30 +205,37 @@ public class SingleImageFragment extends Fragment implements OnMapReadyCallback,
 
     @Override
     public View getInfoContents(Marker marker) {
-        Node element = nodesGetter.get(marker);
-        final View view = (getActivity()).getLayoutInflater()
-                .inflate(R.layout.fragment_single_image, null);
-        ImageView imageView = (ImageView) view.findViewById(R.id.image);
+        try{
+            Node element = nodesGetter.get(marker);
+            final View view = (getActivity()).getLayoutInflater()
+                    .inflate(R.layout.fragment_single_image, null);
+            ImageView imageView = (ImageView) view.findViewById(R.id.image);
 
-        TextView dateTextView = (TextView)  view.findViewById(R.id.singleImageDate);
-        dateTextView.setText(String.valueOf(new Date(element.getTime())));
-        TextView pressTextView = (TextView)  view.findViewById(R.id.singleImagePressure);
-        pressTextView.setText(element.getBar()+"");
-        TextView tempTextView = (TextView)  view.findViewById(R.id.singleImageTemp);
-        tempTextView.setText(element.getTemp()+"");
+            TextView dateTextView = (TextView)  view.findViewById(R.id.singleImageDate);
+            dateTextView.setText(String.valueOf(new Date(element.getTime())));
+            TextView pressTextView = (TextView)  view.findViewById(R.id.singleImagePressure);
+            pressTextView.setText(element.getBar()+"");
+            TextView tempTextView = (TextView)  view.findViewById(R.id.singleImageTemp);
+            tempTextView.setText(element.getTemp()+"");
 //                    if (element.nodes.get(0).getPicture_id() != -1) {
 //
 //                    }
-        Bitmap myBitmap = BitmapFactory.decodeFile(element.getIcon_id());
-        imageView.setImageBitmap(myBitmap);
-        myViewModel.getRouteFromId(element.getRoute_id()).observe(getActivity(), new Observer<Route>() {
-            @Override
-            public void onChanged(Route s) {
-                TextView titleTextView = (TextView) view.findViewById(R.id.singleImageTitle);
-                titleTextView.setText(s.getTitle());
-            }
-        });
-        return view;
+            Bitmap myBitmap = BitmapFactory.decodeFile(element.getIcon_id());
+            imageView.setImageBitmap(myBitmap);
+            myViewModel.getRouteFromId(element.getRoute_id()).observe(getActivity(), new Observer<Route>() {
+                @Override
+                public void onChanged(Route s) {
+                    TextView titleTextView = (TextView) view.findViewById(R.id.singleImageTitle);
+                    titleTextView.setText(s.getTitle());
+                }
+            });
+            return view;
+        } catch (NullPointerException e) {
+            final View view = (getActivity()).getLayoutInflater()
+                    .inflate(R.layout.fragment_single_image, null);
+            return view;
+        }
+
     }
 
 }
