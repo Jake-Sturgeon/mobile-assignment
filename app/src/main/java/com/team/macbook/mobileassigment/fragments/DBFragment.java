@@ -29,13 +29,23 @@ public class DBFragment extends Fragment {
     View view;
     private MyViewModel myViewModel;
 
+    /**
+     * Required empty constructor
+     */
     public DBFragment() {
         // Required empty public constructor
     }
 
 
-
-
+    /**
+     *
+     * Creates view, view model, buttons
+     *
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -49,35 +59,6 @@ public class DBFragment extends Fragment {
         // in the foreground.
 
         final LifecycleOwner tracker = this;
-
-//        myViewModel.getCR().observe(this, new Observer<CompleteRoute>(){
-//            @Override
-//            public void onChanged(@Nullable final CompleteRoute newValue) {
-//                if (newValue != null) {
-//                    Log.d("Current route title", String.valueOf(newValue.route.getTitle()));
-//                    TextView title = view.findViewById(R.id.routeTitle);
-//                    title.setText(newValue.route.getTitle());
-//                    TextView node_number = view.findViewById(R.id.node_number);
-//                    node_number.setText(String.valueOf(newValue.nodes.size()));
-//                    TextView edge_number = view.findViewById(R.id.edge_number);
-//                    edge_number.setText(String.valueOf(newValue.edges.size()));
-//                }
-//            }});
-
-
-        // it generates a request to generate a new random number
-//        Button button = view.findViewById(R.id.getButton);
-//        button.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                EditText num = view.findViewById(R.id.routeNumber);
-//                myViewModel.setCR(num.getText().toString() ,tracker);
-//                Log.d("Setting route", num.getText().toString());
-//
-////                myViewModel.toggle();
-////                startActivity(new Intent(MyView.this, MapsActivity.class));
-//            }
-//        });
         Button new_button = view.findViewById(R.id.submit);
         new_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,9 +75,6 @@ public class DBFragment extends Fragment {
                     intent.putExtra("current_route", id);
                     startActivity(intent);
                 }
-//                myViewModel.setRoute_active(true);
-//                myViewModel.toggle();
-//                startActivity(new Intent(MyView.this, MapsActivity.class));
             }
         });
 

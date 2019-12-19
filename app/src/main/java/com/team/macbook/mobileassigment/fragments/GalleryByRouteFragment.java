@@ -34,12 +34,24 @@ public class GalleryByRouteFragment extends Fragment {
     private MyGalleryByRouteAdaptor mAdapter;
 
 
-
+    /**
+     * Required empty constructor
+     */
     public GalleryByRouteFragment() {
         // Required empty public constructor
     }
 
 
+    /**
+     *
+     * Creates view, recycler views, buttons, viewmodels
+     *
+     *
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

@@ -35,12 +35,23 @@ public class HomeFragment extends Fragment {
     private MyAdapter mAdapter;
 
 
-
+    /**
+     * Required empty constructor
+     */
     public HomeFragment() {
         // Required empty public constructor
     }
 
 
+    /**
+     *
+     * Creates view, viewers, buttons, viewmodels
+     *
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

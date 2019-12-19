@@ -36,11 +36,23 @@ public class SingleRouteFragment extends Fragment {
     private MyGalleryAdapter mAdapter;
 
 
+    /**
+     * Required empty constructor
+     */
     public SingleRouteFragment() {
         // Required empty public constructor
     }
 
 
+    /**
+     *
+     * Creates the view, viewmodel, viewers and buttons
+     *
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return View
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

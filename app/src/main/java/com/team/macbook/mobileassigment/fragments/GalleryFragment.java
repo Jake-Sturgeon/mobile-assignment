@@ -36,12 +36,23 @@ public class GalleryFragment extends Fragment {
     private MyGalleryAdapter mAdapter;
 
 
-
+    /**
+     * Required empty contructor
+     */
     public GalleryFragment() {
         // Required empty public constructor
     }
 
 
+    /**
+     *
+     * Creates views, viewers, buttons, viewmodels
+     *
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

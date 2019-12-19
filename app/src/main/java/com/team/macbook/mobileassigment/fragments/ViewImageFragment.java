@@ -25,11 +25,23 @@ public class ViewImageFragment extends Fragment {
     private View view;
     private MyViewModel myViewModel;
 
+    /**
+     * Required empty constructor
+     */
     public ViewImageFragment() {
         // Required empty public constructor
     }
 
 
+    /**
+     *
+     * Creates views, buttons, viewers, viewmodels
+     *
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

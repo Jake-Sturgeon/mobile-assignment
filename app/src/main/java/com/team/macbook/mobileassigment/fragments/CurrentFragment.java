@@ -36,6 +36,11 @@ public class CurrentFragment extends Fragment implements OnMapReadyCallback {
     private FragmentActivity myContext;
     private MapView mapView;
 
+    /**
+     * Attaches a context to the fragment activity
+     *
+     * @param context
+     */
     @Override
     public void onAttach(Context context) {
         myContext = (FragmentActivity) context;
@@ -43,11 +48,23 @@ public class CurrentFragment extends Fragment implements OnMapReadyCallback {
     }
 
 
+    /**
+     * Required empty constructor
+     */
     public CurrentFragment() {
         // Required empty public constructor
     }
 
 
+    /**
+     *
+     * Creates the View, modelviews, and buttons
+     *
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -89,6 +106,11 @@ public class CurrentFragment extends Fragment implements OnMapReadyCallback {
         return view;
     }
 
+    /**
+     * Google map callback
+     *
+     * @param googleMap
+     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;

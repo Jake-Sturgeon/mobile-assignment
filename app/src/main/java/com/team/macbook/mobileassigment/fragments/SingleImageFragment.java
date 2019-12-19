@@ -61,12 +61,23 @@ public class SingleImageFragment extends Fragment implements OnMapReadyCallback,
     private Map<Marker, Node> nodesGetter = new HashMap<>();
 
 
-
+    /**
+     * Required empty constructor
+     */
     public SingleImageFragment() {
         // Required empty public constructor
     }
 
 
+    /**
+     *
+     * Creates views, viewmodels, adaptors, and buttons
+     *
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -127,6 +138,9 @@ public class SingleImageFragment extends Fragment implements OnMapReadyCallback,
 
     }
 
+    /**
+     * Resumes activity
+     */
     @Override
     public void onResume() {
         mapView.onResume();
@@ -142,6 +156,9 @@ public class SingleImageFragment extends Fragment implements OnMapReadyCallback,
         return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 
+    /**
+     * Focuses the camera on the images route
+     */
     private void focusCamera(){
         final Node cn = currentNode.getValue();
 
@@ -178,6 +195,11 @@ public class SingleImageFragment extends Fragment implements OnMapReadyCallback,
 
     }
 
+    /**
+     * Google maps callback function
+     *
+     * @param googleMap
+     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         gmap = googleMap;
@@ -196,11 +218,24 @@ public class SingleImageFragment extends Fragment implements OnMapReadyCallback,
     }
 
 
+    /**
+     * Needed for infocontents
+     *
+     * @param marker
+     * @return
+     */
     @Override
     public View getInfoWindow(Marker marker) {
         return null;
     }
 
+    /**
+     *
+     * Added Info to the Marker popup
+     *
+     * @param marker
+     * @return
+     */
     @Override
     public View getInfoContents(Marker marker) {
         Node element = nodesGetter.get(marker);
