@@ -20,6 +20,8 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -61,6 +63,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.team.macbook.mobileassigment.database.CompleteRoute;
 import com.team.macbook.mobileassigment.database.Edge;
 import com.team.macbook.mobileassigment.database.Node;
+import com.team.macbook.mobileassigment.database.Route;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -71,6 +74,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import pl.aprilapps.easyphotopicker.DefaultCallback;
 import pl.aprilapps.easyphotopicker.EasyImage;
@@ -97,6 +101,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Polyline line;
 
     private MyMapModel myMapModel;
+    private Map<Marker, Node> nodesGetter = new HashMap<>();
 
 
 
@@ -311,6 +316,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onChanged(@Nullable final CompleteRoute newValue) {
                 if (newValue != null) {
+                    nodesGetter.clear();
                     Log.i("EDGE M", newValue.toString());
                     Log.i("EDGE M", newValue.edges.toString());
 
@@ -328,8 +334,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                     for (Node node : newValue.nodes) {
                         LatLng point = new LatLng(node.getLatitude(), node.getLongitude());
-                        Marker marker = mMap.addMarker(new MarkerOptions().title("FUCK OFF").position(point).snippet("Temp: " + node.getTemp() + "\nPressure: " + node.getBar()));
-
+                        Marker marker = mMap.addMarker(new MarkerOptions().title(" ").position(point).snippet("Temp: " + node.getTemp() + "\nPressure: " + node.getBar()));
+                        nodesGetter.put(marker, node);
                     }
                     line = mMap.addPolyline(options);
                     if (options.getPoints().size() > 0) {
@@ -552,8 +558,29 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public View getInfoContents(Marker marker) {
-        View view = (getActivity()).getLayoutInflater()
-                .inflate(R.layout.activity_main, null);
+        Node element = nodesGetter.get(marker);
+        final View view = (getActivity()).getLayoutInflater()
+                .inflate(R.layout.fragment_single_image, null);
+        ImageView imageView = (ImageView) view.findViewById(R.id.image);
+
+        TextView dateTextView = (TextView)  view.findViewById(R.id.singleImageDate);
+        dateTextView.setText(String.valueOf(new Date(element.getTime())));
+        TextView pressTextView = (TextView)  view.findViewById(R.id.singleImagePressure);
+        pressTextView.setText(element.getBar()+"");
+        TextView tempTextView = (TextView)  view.findViewById(R.id.singleImageTemp);
+        tempTextView.setText(element.getTemp()+"");
+//                    if (element.nodes.get(0).getPicture_id() != -1) {
+//
+//                    }
+        Bitmap myBitmap = BitmapFactory.decodeFile(element.getIcon_id());
+        imageView.setImageBitmap(myBitmap);
+        myMapModel.getRouteFromId(element.getRoute_id()).observe(getActivity(), new Observer<Route>() {
+            @Override
+            public void onChanged(Route s) {
+                TextView titleTextView = (TextView) view.findViewById(R.id.singleImageTitle);
+                titleTextView.setText(s.getTitle());
+            }
+        });
         return view;
     }
 }
