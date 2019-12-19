@@ -13,6 +13,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
@@ -20,9 +21,14 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.ActionProvider;
+import android.view.ContextMenu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -40,7 +46,6 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
@@ -65,6 +70,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.team.macbook.mobileassigment.database.CompleteRoute;
 import com.team.macbook.mobileassigment.database.Edge;
 import com.team.macbook.mobileassigment.database.Node;
+import com.team.macbook.mobileassigment.database.Route;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -75,6 +81,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import pl.aprilapps.easyphotopicker.DefaultCallback;
 import pl.aprilapps.easyphotopicker.EasyImage;
@@ -87,7 +94,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final int CAMERA_REQUEST_CODE = 7500;
 
     private LocationRequest mLocationRequest;
-    private FusedLocationProviderClient mFusedLocationClient;
     private PendingIntent mLocationPendingIntent;
     private static final float SMALLEST_DISPLACEMENT = 0.5F;
 
@@ -102,7 +108,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Polyline line;
 
     private MyMapModel myMapModel;
+
     private BroadcastReceiver receiver;
+
+    private Map<Marker, Node> nodesGetter = new HashMap<>();
+
 
 
 
@@ -249,6 +259,25 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
 
+    public void enableUpdates() {
+        Intent serviceIntent = new Intent(this, ForegroundService.class);
+        serviceIntent.putExtra("inputExtra", "Mobile Assignment is tracking your location for your current route.");
+        ContextCompat.startForegroundService(this, serviceIntent);
+        receiver = new BroadcastReceiver() {
+            private static final String TAG = "MyBroadcastReceiver";
+
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Bundle extras = intent.getExtras();
+                lat = intent.getDoubleExtra("lat", lat);
+                longi = intent.getDoubleExtra("long", longi);
+                Log.d("Broadcast Listener", "Updated lat long");
+            }
+        };
+
+        this.registerReceiver(receiver, new IntentFilter(LocationService.class.getName()));
+    }
+
     public void disableUpdates(MenuItem i) {
         acc.stopAccelerometer();
         bar.stopBarometer();
@@ -264,6 +293,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 return true;
             }
         });
+    }
+
+    public void disableUpdates() {
+        acc.stopAccelerometer();
+        bar.stopBarometer();
+        temp.stopThermometer();
+        Intent serviceIntent = new Intent(this, ForegroundService.class);
+        stopService(serviceIntent);
     }
 
     @Override
@@ -322,6 +359,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onChanged(@Nullable final CompleteRoute newValue) {
                 if (newValue != null) {
+                    nodesGetter.clear();
                     Log.i("EDGE M", newValue.toString());
                     Log.i("EDGE M", newValue.edges.toString());
 
@@ -339,8 +377,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                     for (Node node : newValue.nodes) {
                         LatLng point = new LatLng(node.getLatitude(), node.getLongitude());
-                        Marker marker = mMap.addMarker(new MarkerOptions().title("FUCK OFF").position(point).snippet("Temp: " + node.getTemp() + "\nPressure: " + node.getBar()));
-
+                        Marker marker = mMap.addMarker(new MarkerOptions().title(" ").position(point).snippet("Temp: " + node.getTemp() + "\nPressure: " + node.getBar()));
+                        nodesGetter.put(marker, node);
                     }
                     line = mMap.addPolyline(options);
                     if (options.getPoints().size() > 0) {
@@ -379,18 +417,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
 
             return;
+        } else {
+            enableUpdates();
         }
     }
 
 
-
-    /**
-     * it stops the location updates
-     */
-    private void stopLocationUpdates() {
-        mFusedLocationClient.removeLocationUpdates(mLocationCallback);
-        mFusedLocationClient.removeLocationUpdates(mLocationPendingIntent);
-
+    public void finishActivity(MenuItem i){
+        disableUpdates();
+        finish();
     }
 
     @Override
@@ -435,8 +470,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
-                    mFusedLocationClient.requestLocationUpdates(mLocationRequest,
-                            mLocationCallback, null /* Looper */);
+                    enableUpdates();
 //                    startLocationUpdates(getApplicationContext());
                 } else {
 
@@ -475,7 +509,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onBackPressed() {
-        stopLocationUpdates();
+        disableUpdates();
         finish();
     }
 
@@ -528,8 +562,29 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public View getInfoContents(Marker marker) {
-        View view = (getActivity()).getLayoutInflater()
-                .inflate(R.layout.activity_main, null);
+        Node element = nodesGetter.get(marker);
+        final View view = (getActivity()).getLayoutInflater()
+                .inflate(R.layout.fragment_single_image, null);
+        ImageView imageView = (ImageView) view.findViewById(R.id.image);
+
+        TextView dateTextView = (TextView)  view.findViewById(R.id.singleImageDate);
+        dateTextView.setText(String.valueOf(new Date(element.getTime())));
+        TextView pressTextView = (TextView)  view.findViewById(R.id.singleImagePressure);
+        pressTextView.setText(element.getBar()+"");
+        TextView tempTextView = (TextView)  view.findViewById(R.id.singleImageTemp);
+        tempTextView.setText(element.getTemp()+"");
+//                    if (element.nodes.get(0).getPicture_id() != -1) {
+//
+//                    }
+        Bitmap myBitmap = BitmapFactory.decodeFile(element.getIcon_id());
+        imageView.setImageBitmap(myBitmap);
+        myMapModel.getRouteFromId(element.getRoute_id()).observe(getActivity(), new Observer<Route>() {
+            @Override
+            public void onChanged(Route s) {
+                TextView titleTextView = (TextView) view.findViewById(R.id.singleImageTitle);
+                titleTextView.setText(s.getTitle());
+            }
+        });
         return view;
     }
 }

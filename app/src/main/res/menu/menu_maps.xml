@@ -5,9 +5,9 @@
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
-        android:title="@string/map_menu_1"
-        android:icon="@android:drawable/ic_menu_compass"
-        android:onClick="enableUpdates"
+        android:title="@string/map_menu_2"
+        android:icon="@android:drawable/ic_menu_close_clear_cancel"
+        android:onClick="disableUpdates"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_settings2"
@@ -20,6 +20,7 @@
         android:id="@+id/action_settings3"
         android:orderInCategory="100"
         android:title="@string/map_menu_4"
-        android:icon="@android:drawable/ic_menu_save"
+        android:icon="@android:drawable/ic_menu_myplaces"
+        android:onClick="finishActivity"
         app:showAsAction="never" />
 </menu>

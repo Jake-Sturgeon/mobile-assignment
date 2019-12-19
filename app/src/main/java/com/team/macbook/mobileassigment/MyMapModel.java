@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
 import com.team.macbook.mobileassigment.database.CompleteRoute;
+import com.team.macbook.mobileassigment.database.Route;
 
 public class MyMapModel extends AndroidViewModel {
     private final MyRepository mRepository;
@@ -58,8 +59,14 @@ public class MyMapModel extends AndroidViewModel {
         this.current = c;
     }
 
-    public String retrieveRecentRouteId(){
+    public String retrieveRecentRouteId() {
         return mRepository.retrieveRecentRouteId();
+    }
+
+    public LiveData<Route> getRouteFromId(String id){
+        return mRepository.getRouteFromId(id);
+
+
     }
 
 }
