@@ -54,8 +54,6 @@ public class MyGalleryAdapter extends RecyclerView.Adapter<MyGalleryAdapter.View
         //Use the provided View Holder on the onCreateViewHolder method to populate the
         // current row on the RecyclerView
         if (holder!=null && items.get(position)!=null) {
-            //holder.title.setText(items.get(position).route.getTitle());
-            //holder.preview.setText(String.valueOf(new Date(items.get(position).route.getStartDate())));
             Bitmap myBitmap = BitmapFactory.decodeFile(items.get(position).getPicture_id());
             holder.imageView.setImageBitmap(myBitmap);
 

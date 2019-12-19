@@ -44,7 +44,7 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_home, container, false);
-        myViewModel = ViewModelProviders.of(this).get(MyViewModel.class);
+        myViewModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
         mAdapter = new MyAdapter(new ArrayList<CompleteRoute>(), myViewModel);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.my_list);
         mRecyclerView.setHasFixedSize(true);

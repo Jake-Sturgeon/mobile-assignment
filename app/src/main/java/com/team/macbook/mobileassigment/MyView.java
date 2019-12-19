@@ -44,6 +44,7 @@ public class MyView extends AppCompatActivity {
     private HomeFragment home_frag;
     private GalleryFragment gallery_frag;
     private SingleImageFragment single_image_frag;
+    private SingleRouteFragment single_route_frag;
 
 
 
@@ -176,6 +177,20 @@ public class MyView extends AppCompatActivity {
                     }
                     FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                     transaction.replace(R.id.fragment_container, single_image_frag);
+                    transaction.commit();
+                }
+            }});
+
+        myViewModel.getViewRouteSingle().observe(this, new Observer<CompleteRoute>(){
+            @Override
+            public void onChanged(@Nullable final CompleteRoute element) {
+                if (element != null) {
+                    if (single_route_frag == null){
+                        single_route_frag = new SingleRouteFragment();
+                    }
+                    System.out.println("HELLO JOE");
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.fragment_container, single_route_frag);
                     transaction.commit();
                 }
             }});

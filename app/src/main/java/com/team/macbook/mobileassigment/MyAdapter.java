@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -25,7 +26,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.View_Holder> {
     private Context context;
     private static List<CompleteRoute> items;
     private MyViewModel myViewModel;
+
+
     public MyAdapter(List<CompleteRoute> items, MyViewModel myViewModel) {
+
         this.items = items;
         this.myViewModel = myViewModel;
     }
@@ -47,6 +51,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.View_Holder> {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_image,
                 parent, false);
         View_Holder holder = new View_Holder(v);
+
         return holder;
     }
     @Override
@@ -64,9 +69,40 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.View_Holder> {
                 holder.imageView.setImageBitmap(myBitmap);
             }
 
+            holder.imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    System.out.println("HELLO STEVE");
+                    myViewModel.setViewRouteSingle(items.get(position));
+
+                }
+            });
+
+            holder.title.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    System.out.println("HELLO STEVE");
+                    myViewModel.setViewRouteSingle(items.get(position));
+
+                }
+            });
+
+            holder.preview.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    System.out.println("HELLO STEVE");
+                    myViewModel.setViewRouteSingle(items.get(position));
+
+
+
+                }
+            });
+
         }
         //animate(holder);
     }
+
+
     @Override
     public int getItemCount() {
         return items.size();
