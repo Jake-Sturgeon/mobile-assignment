@@ -41,6 +41,10 @@ import com.team.macbook.mobileassigment.sensors.Thermometer;
 
 import static android.content.ContentValues.TAG;
 
+/**
+ * Creates a ForegroundService service that provides a notification for the user. This allows the
+ * user to remove the app from the apps tray and return to the correct route
+ */
 public class ForegroundService extends Service {
     public static final String CHANNEL_ID = "ForegroundServiceChannel";
 
@@ -75,7 +79,9 @@ public class ForegroundService extends Service {
     private Handler mServiceHandler;
 
 
-
+    /**
+     * Create the fused listeneer
+     */
     @Override
     public void onCreate() {
         super.onCreate();
@@ -100,7 +106,15 @@ public class ForegroundService extends Service {
     }
 
 
-
+    /**
+     *
+     * When the intent is called it builds the notification and a ForegroundService service
+     *
+     * @param intent
+     * @param flags
+     * @param startId
+     * @return
+     */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         String input = intent.getStringExtra("inputExtra");
@@ -123,6 +137,9 @@ public class ForegroundService extends Service {
         return START_NOT_STICKY;
     }
 
+    /**
+     * Gets the last location given by the service
+     */
     public void getLastLocation() {
         try {
             mFusedLocationClient.getLastLocation()
@@ -148,6 +165,10 @@ public class ForegroundService extends Service {
         // Notify anyone listening for broadcasts about the new location.
 
     }
+
+    /**
+     * Used to set up the pending intent for the location service
+     */
     public void requestLocationUpdates() {
         Log.i(TAG, "Requesting location updates");
 
@@ -188,10 +209,21 @@ public class ForegroundService extends Service {
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
+    /**
+     * Used to destroy the service
+     */
     @Override
     public void onDestroy() {
         super.onDestroy();
     }
+
+    /**
+     *
+     * Binds the intent
+     *
+     * @param intent
+     * @return
+     */
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {

@@ -15,6 +15,9 @@ import com.team.macbook.mobileassigment.models.MyMapModel;
 import java.text.DateFormat;
 import java.util.Date;
 
+/**
+ * LocationService is an IntentService that returns the current location and saves to the database
+ */
 public class LocationService extends IntentService {
     private static final String TAG = "INTENTS";
     private Location mCurrentLocation;
@@ -23,12 +26,19 @@ public class LocationService extends IntentService {
     private MyMapModel myMapModel;
 
 
+    /**
+     * used to set the map model to the maps activity
+     * to allow the user to swipe the app from the tray
+     */
     @Override
     public void onCreate() {
         super.onCreate();
         myMapModel = ViewModelProviders.of(MapsActivity.getActivity()).get(MyMapModel.class);
     }
 
+    /**
+     * Required empty constructor
+     */
     public LocationService() {
         super("Location Intent");
     }
